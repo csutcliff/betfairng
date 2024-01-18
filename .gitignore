@@ -256,3 +256,6 @@ nuget.exe
 /ConsoleExample/App.config
 /ConsoleExample/SecureStringManager.cs
 .nuget
+
+
+.vscode/
