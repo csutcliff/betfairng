@@ -326,13 +326,12 @@ namespace BetfairNG
             if (IsValidPrice(price))
                 return price;
 
-            int index = 0;
             for (int i = 0; i < Table.Length; i++)
             {
                 if (Table[i] > price)
-                    return Table[++index];
-
-                index++;
+                {
+                    return Table[i];
+                }
             }
 
             return 0.0;
