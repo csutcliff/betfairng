@@ -15,7 +15,9 @@ namespace BetfairNG
     public enum Endpoint
     {
         Betting,
+
         Account,
+
         Scores,
     }
 
@@ -25,70 +27,135 @@ namespace BetfairNG
     public class BetfairClient
     {
         private static readonly string AMOUNT = "amount";
+
         private static readonly string BET_IDS = "betIds";
+
         private static readonly string BET_STATUS = "betStatus";
+
         private static readonly string CANCEL_ORDERS_METHOD = "SportsAPING/v1.0/cancelOrders";
+
         private static readonly string CUSTOMER_REFERENCE = "customerRef";
+
         private static readonly string CUSTOMER_STRATEGY = "customerStrategyRef";
+
         private static readonly string DATE_RANGE = "dateRange";
+
         private static readonly string EVENT_IDS = "eventIds";
+
         private static readonly string EVENT_TYPE_IDS = "eventTypeIds";
+
         private static readonly string FILTER = "filter";
+
         private static readonly string FROM = "from";
+
         private static readonly string FROM_CURRENCY = "fromCurrency";
+
         private static readonly string FROM_RECORD = "fromRecord";
+
         private static readonly string GET_ACCOUNT_DETAILS = "AccountAPING/v1.0/getAccountDetails";
+
         private static readonly string GET_ACCOUNT_FUNDS = "AccountAPING/v1.0/getAccountFunds";
+
         private static readonly string GET_ACCOUNT_STATEMENT = "AccountAPING/v1.0/getAccountStatement";
+
         private static readonly string GRANULARITY = "granularity";
+
         private static readonly string GROUP_BY = "groupBy";
+
         private static readonly string INCLUDE_BSP_BETS = "includeBspBets";
+
         private static readonly string INCLUDE_ITEM_DESCRIPTION = "includeItemDescription";
+
         private static readonly string INCLUDE_SETTLED_BETS = "includeSettledBets";
+
         private static readonly string INSTRUCTIONS = "instructions";
+
         private static readonly string LIST_CLEARED_ORDERS_METHOD = "SportsAPING/v1.0/listClearedOrders";
+
         private static readonly string LIST_COMPETITIONS_METHOD = "SportsAPING/v1.0/listCompetitions";
+
         private static readonly string LIST_COUNTRIES_METHOD = "SportsAPING/v1.0/listCountries";
+
         private static readonly string LIST_CURRENCY_RATES = "AccountAPING/v1.0/listCurrencyRates";
+
         private static readonly string LIST_CURRENT_ORDERS_METHOD = "SportsAPING/v1.0/listCurrentOrders";
+
         private static readonly string LIST_EVENT_TYPES_METHOD = "SportsAPING/v1.0/listEventTypes";
+
         private static readonly string LIST_EVENTS_METHOD = "SportsAPING/v1.0/listEvents";
+
         private static readonly string LIST_MARKET_BOOK_METHOD = "SportsAPING/v1.0/listMarketBook";
+
         private static readonly string LIST_MARKET_CATALOGUE_METHOD = "SportsAPING/v1.0/listMarketCatalogue";
+
         private static readonly string LIST_MARKET_PROFIT_AND_LOSS = "SportsAPING/v1.0/listMarketProfitAndLoss";
+
         private static readonly string LIST_MARKET_TYPES = "SportsAPING/v1.0/listMarketTypes";
+
         private static readonly string LIST_RACE_DETAILS = "ScoresAPING/v1.0/listRaceDetails";
+
         private static readonly string LIST_TIME_RANGES = "SportsAPING/v1.0/listTimeRanges";
+
         private static readonly string LIST_VENUES = "SportsAPING/v1.0/listVenues";
+
         private static readonly string MARKET_ID = "marketId";
+
         private static readonly string MARKET_IDS = "marketIds";
+
         private static readonly string MARKET_PROJECTION = "marketProjection";
+
         private static readonly string MARKET_VERSION = "marketVersion";
+
         private static readonly string MATCH_PROJECTION = "matchProjection";
+
         private static readonly string MAX_RESULTS = "maxResults";
+
         private static readonly string MEETINGIDS = "meetingIds";
+
         private static readonly string NET_OF_COMMISSION = "netOfCommission";
+
         private static readonly string ORDER_BY = "orderBy";
+
         private static readonly string ORDER_PROJECTION = "orderProjection";
+
         private static readonly string PLACE_ORDERS_METHOD = "SportsAPING/v1.0/placeOrders";
+
         private static readonly string PLACED_DATE_RANGE = "placedDateRange";
+
         private static readonly string PRICE_PROJECTION = "priceProjection";
+
         private static readonly string RACEIDS = "raceIds";
+
         private static readonly string RECORD_COUNT = "recordCount";
+
         private static readonly string REPLACE_ORDERS_METHOD = "SportsAPING/v1.0/replaceOrders";
+
         private static readonly string RUNNER_IDS = "runnerIds";
+
         private static readonly string SETTLED_DATE_RANGE = "settledDateRange";
+
         private static readonly string SIDE = "side";
+
         private static readonly string SORT = "sort";
+
         private static readonly string SORT_DIR = "sortDir";
+
         private static readonly string TO = "to";
+
         private static readonly string TRANSFER_FUNDS = "AccountAPING/v1.0/transferFunds";
+
         private static readonly string UPDATE_ORDERS_METHOD = "SportsAPING/v1.0/updateOrders";
+
         private static readonly string WALLET = "wallet";
+
         private readonly string appKey;
+
         private readonly Action preNetworkRequest;
+
         private readonly WebProxy proxy;
+
         private Network networkClient;
+
         private string sessionToken;
 
         public BetfairClient(string appKey, Action preNetworkRequest = null, WebProxy proxy = null)
@@ -407,7 +474,7 @@ namespace BetfairNG
 
         public Task<BetfairServerResponse<PlaceExecutionReport>> PlaceOrders(
             string marketId,
-            IList<PlaceInstruction> placeInstructions,
+            IEnumerable<PlaceInstruction> placeInstructions,
             string customerRef = null,
             MarketVersion marketVersion = null,
             string customerStrategyRef = null)
