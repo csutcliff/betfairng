@@ -125,11 +125,11 @@ namespace Betfair.ESAClient.Cache
             }
         }
 
-        public OrderMarket TryGetValue(string marketId)
+        public bool TryGetValue(string marketId, out OrderMarket market)
         {
-            if (_markets.TryGetValue(marketId, out OrderMarket market))
-                return market;
-            return null;
+            if (_markets.TryGetValue(marketId, out market))
+                return true;
+            return false;
         }
 
         private void DispatchBatchOrderMarketsChanged(BatchOrderMarketsChangedEventArgs args)
