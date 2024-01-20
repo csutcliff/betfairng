@@ -17,9 +17,8 @@ namespace Betfair.ESAClient.Protocol
                 InitialClk = message.InitialClk,
                 ConflateMs = message.ConflateMs,
                 HeartbeatMs = message.HeartbeatMs,
+                Items = message.Mc
             };
-
-            change.Items = message.Mc;
 
             switch (message.SegmentType)
             {
@@ -62,9 +61,8 @@ namespace Betfair.ESAClient.Protocol
                 InitialClk = message.InitialClk,
                 ConflateMs = message.ConflateMs,
                 HeartbeatMs = message.HeartbeatMs,
+                Items = message.Oc
             };
-
-            change.Items = message.Oc;
 
             switch (message.SegmentType)
             {

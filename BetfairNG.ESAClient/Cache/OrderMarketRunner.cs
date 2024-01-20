@@ -6,21 +6,15 @@ namespace Betfair.ESAClient.Cache
     /// <summary>
     /// Cached state of the runner
     /// </summary>
-    public class OrderMarketRunner
+    public class OrderMarketRunner(OrderMarket market, RunnerId runnerId)
     {
-        private readonly OrderMarket _market;
-        private readonly RunnerId _runnerId;
+        private readonly OrderMarket _market = market;
+        private readonly RunnerId _runnerId = runnerId;
 
         private readonly PriceSizeLadder _matchedBack = PriceSizeLadder.NewBack();
         private readonly PriceSizeLadder _matchedLay = PriceSizeLadder.NewLay();
         private OrderMarketRunnerSnap _snap;
-        private readonly Dictionary<string, Order> _unmatchedOrders = new();
-
-        public OrderMarketRunner(OrderMarket market, RunnerId runnerId)
-        {
-            _market = market;
-            _runnerId = runnerId;
-        }
+        private readonly Dictionary<string, Order> _unmatchedOrders = [];
 
         public OrderMarket Market
         {

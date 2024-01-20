@@ -9,76 +9,67 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="MarketChange" /> class.
+    ///     Initializes a new instance of the <see cref="MarketChange" />class.
+    /// </remarks>
+    /// <param name="Rc">Runner Changes - a list of changes to runners (or null if un-changed).</param>
+    /// <param name="Img">Image - replace existing prices / data with the data supplied: it is not a delta (or null if delta).</param>
+    /// <param name="Tv">The total amount matched across the market. This value is truncated at 2dp (or null if un-changed).</param>
+    /// <param name="Con">Conflated - have more than a single change been combined (or null if not conflated).</param>
+    /// <param name="MarketDefinition">Market Definition - the definition of the market (or null if un-changed).</param>
+    /// <param name="Id">Market Id - the id of the market.</param>
     [DataContract]
-    public class MarketChange : IEquatable<MarketChange>
+    public class MarketChange(
+        List<RunnerChange> Rc = null,
+        bool? Img = null,
+        double? Tv = null,
+        bool? Con = null,
+        MarketDefinition MarketDefinition = null,
+        string Id = null) : IEquatable<MarketChange>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="MarketChange" /> class.
-        ///     Initializes a new instance of the <see cref="MarketChange" />class.
-        /// </summary>
-        /// <param name="Rc">Runner Changes - a list of changes to runners (or null if un-changed).</param>
-        /// <param name="Img">Image - replace existing prices / data with the data supplied: it is not a delta (or null if delta).</param>
-        /// <param name="Tv">The total amount matched across the market. This value is truncated at 2dp (or null if un-changed).</param>
-        /// <param name="Con">Conflated - have more than a single change been combined (or null if not conflated).</param>
-        /// <param name="MarketDefinition">Market Definition - the definition of the market (or null if un-changed).</param>
-        /// <param name="Id">Market Id - the id of the market.</param>
-        public MarketChange(
-            List<RunnerChange> Rc = null,
-            bool? Img = null,
-            double? Tv = null,
-            bool? Con = null,
-            MarketDefinition MarketDefinition = null,
-            string Id = null)
-        {
-            this.Rc = Rc;
-            this.Img = Img;
-            this.Tv = Tv;
-            this.Con = Con;
-            this.MarketDefinition = MarketDefinition;
-            this.Id = Id;
-        }
 
         /// <summary>
         ///     Conflated - have more than a single change been combined (or null if not conflated)
         /// </summary>
         /// <value>Conflated - have more than a single change been combined (or null if not conflated)</value>
         [DataMember(Name = "con", EmitDefaultValue = false)]
-        public bool? Con { get; set; }
+        public bool? Con { get; set; } = Con;
 
         /// <summary>
         ///     Market Id - the id of the market
         /// </summary>
         /// <value>Market Id - the id of the market</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public string Id { get; set; }
+        public string Id { get; set; } = Id;
 
         /// <summary>
         ///     Image - replace existing prices / data with the data supplied: it is not a delta (or null if delta)
         /// </summary>
         /// <value>Image - replace existing prices / data with the data supplied: it is not a delta (or null if delta)</value>
         [DataMember(Name = "img", EmitDefaultValue = false)]
-        public bool? Img { get; set; }
+        public bool? Img { get; set; } = Img;
 
         /// <summary>
         ///     Market Definition - the definition of the market (or null if un-changed)
         /// </summary>
         /// <value>Market Definition - the definition of the market (or null if un-changed)</value>
         [DataMember(Name = "marketDefinition", EmitDefaultValue = false)]
-        public MarketDefinition MarketDefinition { get; set; }
+        public MarketDefinition MarketDefinition { get; set; } = MarketDefinition;
 
         /// <summary>
         ///     Runner Changes - a list of changes to runners (or null if un-changed)
         /// </summary>
         /// <value>Runner Changes - a list of changes to runners (or null if un-changed)</value>
         [DataMember(Name = "rc", EmitDefaultValue = false)]
-        public List<RunnerChange> Rc { get; set; }
+        public List<RunnerChange> Rc { get; set; } = Rc;
 
         /// <summary>
         ///     The total amount matched across the market. This value is truncated at 2dp (or null if un-changed)
         /// </summary>
         /// <value>The total amount matched across the market. This value is truncated at 2dp (or null if un-changed)</value>
         [DataMember(Name = "tv", EmitDefaultValue = false)]
-        public double? Tv { get; set; }
+        public double? Tv { get; set; } = Tv;
 
         /// <summary>
         ///     Returns true if objects are equal

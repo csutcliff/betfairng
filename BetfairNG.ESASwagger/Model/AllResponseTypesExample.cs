@@ -8,31 +8,23 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="AllResponseTypesExample" /> class.
+    ///     Initializes a new instance of the <see cref="AllResponseTypesExample" />class.
+    /// </remarks>
+    /// <param name="OpTypes">OpTypes.</param>
+    /// <param name="MarketChangeMessage">MarketChangeMessage.</param>
+    /// <param name="Connection">Connection.</param>
+    /// <param name="OrderChangeMessage">OrderChangeMessage.</param>
+    /// <param name="Status">Status.</param>
     [DataContract]
-    public class AllResponseTypesExample : IEquatable<AllResponseTypesExample>
+    public class AllResponseTypesExample(
+AllResponseTypesExample.OpTypesEnum? OpTypes = null,
+        MarketChangeMessage MarketChangeMessage = null,
+        ConnectionMessage Connection = null,
+        OrderChangeMessage OrderChangeMessage = null,
+        StatusMessage Status = null) : IEquatable<AllResponseTypesExample>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="AllResponseTypesExample" /> class.
-        ///     Initializes a new instance of the <see cref="AllResponseTypesExample" />class.
-        /// </summary>
-        /// <param name="OpTypes">OpTypes.</param>
-        /// <param name="MarketChangeMessage">MarketChangeMessage.</param>
-        /// <param name="Connection">Connection.</param>
-        /// <param name="OrderChangeMessage">OrderChangeMessage.</param>
-        /// <param name="Status">Status.</param>
-        public AllResponseTypesExample(
-            OpTypesEnum? OpTypes = null,
-            MarketChangeMessage MarketChangeMessage = null,
-            ConnectionMessage Connection = null,
-            OrderChangeMessage OrderChangeMessage = null,
-            StatusMessage Status = null)
-        {
-            this.OpTypes = OpTypes;
-            this.MarketChangeMessage = MarketChangeMessage;
-            this.Connection = Connection;
-            this.OrderChangeMessage = OrderChangeMessage;
-            this.Status = Status;
-        }
 
         /// <summary>
         ///     Gets or Sets OpTypes
@@ -57,31 +49,31 @@ namespace Betfair.ESASwagger.Model
         ///     Gets or Sets Connection
         /// </summary>
         [DataMember(Name = "connection", EmitDefaultValue = false)]
-        public ConnectionMessage Connection { get; set; }
+        public ConnectionMessage Connection { get; set; } = Connection;
 
         /// <summary>
         ///     Gets or Sets MarketChangeMessage
         /// </summary>
         [DataMember(Name = "marketChangeMessage", EmitDefaultValue = false)]
-        public MarketChangeMessage MarketChangeMessage { get; set; }
+        public MarketChangeMessage MarketChangeMessage { get; set; } = MarketChangeMessage;
 
         /// <summary>
         ///     Gets or Sets OpTypes
         /// </summary>
         [DataMember(Name = "opTypes", EmitDefaultValue = false)]
-        public OpTypesEnum? OpTypes { get; set; }
+        public OpTypesEnum? OpTypes { get; set; } = OpTypes;
 
         /// <summary>
         ///     Gets or Sets OrderChangeMessage
         /// </summary>
         [DataMember(Name = "orderChangeMessage", EmitDefaultValue = false)]
-        public OrderChangeMessage OrderChangeMessage { get; set; }
+        public OrderChangeMessage OrderChangeMessage { get; set; } = OrderChangeMessage;
 
         /// <summary>
         ///     Gets or Sets Status
         /// </summary>
         [DataMember(Name = "status", EmitDefaultValue = false)]
-        public StatusMessage Status { get; set; }
+        public StatusMessage Status { get; set; } = Status;
 
         /// <summary>
         ///     Returns true if objects are equal

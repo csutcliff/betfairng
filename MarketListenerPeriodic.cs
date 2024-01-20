@@ -44,7 +44,7 @@ namespace BetfairNG
 
         public void Dispose()
         {
-            if (_polling != null) _polling.Dispose();
+            _polling?.Dispose();
         }
 
         public IObservable<MarketBook> SubscribeMarketBook(string marketId)

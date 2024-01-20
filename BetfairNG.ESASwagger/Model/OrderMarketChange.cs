@@ -9,58 +9,50 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="OrderMarketChange" /> class.
+    ///     Initializes a new instance of the <see cref="OrderMarketChange" />class.
+    /// </remarks>
+    /// <param name="AccountId">AccountId.</param>
+    /// <param name="Orc">Order Changes - a list of changes to orders on a selection.</param>
+    /// <param name="Closed">Closed.</param>
+    /// <param name="Id">Market Id - the id of the market the order is on.</param>
+    /// <param name="FullImage">FullImage.</param>
     [DataContract]
-    public class OrderMarketChange : IEquatable<OrderMarketChange>
+    public class OrderMarketChange(long? AccountId = null, List<OrderRunnerChange> Orc = null, bool? Closed = null, string Id = null, bool? FullImage = null) : IEquatable<OrderMarketChange>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="OrderMarketChange" /> class.
-        ///     Initializes a new instance of the <see cref="OrderMarketChange" />class.
-        /// </summary>
-        /// <param name="AccountId">AccountId.</param>
-        /// <param name="Orc">Order Changes - a list of changes to orders on a selection.</param>
-        /// <param name="Closed">Closed.</param>
-        /// <param name="Id">Market Id - the id of the market the order is on.</param>
-        /// <param name="FullImage">FullImage.</param>
-        public OrderMarketChange(long? AccountId = null, List<OrderRunnerChange> Orc = null, bool? Closed = null, string Id = null, bool? FullImage = null)
-        {
-            this.AccountId = AccountId;
-            this.Orc = Orc;
-            this.Closed = Closed;
-            this.Id = Id;
-            this.FullImage = FullImage;
-        }
 
         /// <summary>
         ///     Gets or Sets AccountId
         /// </summary>
         [DataMember(Name = "accountId", EmitDefaultValue = false)]
-        public long? AccountId { get; set; }
+        public long? AccountId { get; set; } = AccountId;
 
         /// <summary>
         ///     Gets or Sets Closed
         /// </summary>
         [DataMember(Name = "closed", EmitDefaultValue = false)]
-        public bool? Closed { get; set; }
+        public bool? Closed { get; set; } = Closed;
 
         /// <summary>
         ///     Gets or Sets FullImage
         /// </summary>
         [DataMember(Name = "fullImage", EmitDefaultValue = false)]
-        public bool? FullImage { get; set; }
+        public bool? FullImage { get; set; } = FullImage;
 
         /// <summary>
         ///     Market Id - the id of the market the order is on
         /// </summary>
         /// <value>Market Id - the id of the market the order is on</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public string Id { get; set; }
+        public string Id { get; set; } = Id;
 
         /// <summary>
         ///     Order Changes - a list of changes to orders on a selection
         /// </summary>
         /// <value>Order Changes - a list of changes to orders on a selection</value>
         [DataMember(Name = "orc", EmitDefaultValue = false)]
-        public List<OrderRunnerChange> Orc { get; set; }
+        public List<OrderRunnerChange> Orc { get; set; } = Orc;
 
         /// <summary>
         ///     Returns true if objects are equal

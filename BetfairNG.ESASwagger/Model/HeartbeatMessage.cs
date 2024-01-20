@@ -7,34 +7,29 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="HeartbeatMessage" /> class.
+    ///     Initializes a new instance of the <see cref="HeartbeatMessage" />class.
+    /// </remarks>
+    /// <param name="Op">The operation type.</param>
+    /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
     [DataContract]
-    public class HeartbeatMessage : RequestMessage, IEquatable<HeartbeatMessage>
+    public class HeartbeatMessage(string Op = null, int? Id = null) : RequestMessage, IEquatable<HeartbeatMessage>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="HeartbeatMessage" /> class.
-        ///     Initializes a new instance of the <see cref="HeartbeatMessage" />class.
-        /// </summary>
-        /// <param name="Op">The operation type.</param>
-        /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
-        public HeartbeatMessage(string Op = null, int? Id = null)
-        {
-            this.Op = Op;
-            this.Id = Id;
-        }
 
         /// <summary>
         ///     Client generated unique id to link request with response (like json rpc)
         /// </summary>
         /// <value>Client generated unique id to link request with response (like json rpc)</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public new int? Id { get; set; }
+        public new int? Id { get; set; } = Id;
 
         /// <summary>
         ///     The operation type
         /// </summary>
         /// <value>The operation type</value>
         [DataMember(Name = "op", EmitDefaultValue = false)]
-        public new string Op { get; set; }
+        public new string Op { get; set; } = Op;
 
         /// <summary>
         ///     Returns true if objects are equal

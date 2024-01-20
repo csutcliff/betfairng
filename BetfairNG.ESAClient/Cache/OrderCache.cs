@@ -97,7 +97,7 @@ namespace Betfair.ESAClient.Cache
                     if (isImage)
                     {
                         // Clear market from cache if it is being re-imaged
-                        _markets.TryRemove(marketChange.Id, out OrderMarket removed);
+                        _markets.TryRemove(marketChange.Id, out OrderMarket _);
                     }
 
                     OrderMarket market = OnOrderMarketChange(marketChange);
@@ -105,7 +105,7 @@ namespace Betfair.ESAClient.Cache
                     if (IsOrderMarketRemovedOnClose && market.IsClosed)
                     {
                         //remove on close
-                        _markets.TryRemove(market.MarketId, out OrderMarket removed);
+                        _markets.TryRemove(market.MarketId, out OrderMarket _);
                     }
                     //lazy build events
                     if (batch != null || OrderMarketChanged != null)
@@ -115,10 +115,7 @@ namespace Betfair.ESAClient.Cache
                         {
                             DispatchOrderMarketChanged(arg);
                         }
-                        if (batch != null)
-                        {
-                            batch.Add(arg);
-                        }
+                        batch?.Add(arg);
                     }
                 }
                 if (batch != null)
@@ -126,6 +123,13 @@ namespace Betfair.ESAClient.Cache
                     DispatchBatchOrderMarketsChanged(new BatchOrderMarketsChangedEventArgs() { Changes = batch });
                 }
             }
+        }
+
+        public OrderMarket TryGetValue(string marketId)
+        {
+            if (_markets.TryGetValue(marketId, out OrderMarket market))
+                return market;
+            return null;
         }
 
         private void DispatchBatchOrderMarketsChanged(BatchOrderMarketsChangedEventArgs args)

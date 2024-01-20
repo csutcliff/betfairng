@@ -10,44 +10,31 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="MarketFilter" /> class.
+    ///     Initializes a new instance of the <see cref="MarketFilter" />class.
+    /// </remarks>
+    /// <param name="CountryCodes">CountryCodes.</param>
+    /// <param name="BettingTypes">BettingTypes.</param>
+    /// <param name="TurnInPlayEnabled">TurnInPlayEnabled.</param>
+    /// <param name="MarketTypes">MarketTypes.</param>
+    /// <param name="Venues">Venues.</param>
+    /// <param name="MarketIds">MarketIds.</param>
+    /// <param name="EventTypeIds">EventTypeIds.</param>
+    /// <param name="EventIds">EventIds.</param>
+    /// <param name="BspMarket">BspMarket.</param>
     [DataContract]
-    public class MarketFilter : IEquatable<MarketFilter>
+    public class MarketFilter(
+        List<string> CountryCodes = null,
+        List<MarketFilter.BettingTypesEnum?> BettingTypes = null,
+        bool? TurnInPlayEnabled = null,
+        List<string> MarketTypes = null,
+        List<string> Venues = null,
+        List<string> MarketIds = null,
+        List<string> EventTypeIds = null,
+        List<string> EventIds = null,
+        bool? BspMarket = null) : IEquatable<MarketFilter>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="MarketFilter" /> class.
-        ///     Initializes a new instance of the <see cref="MarketFilter" />class.
-        /// </summary>
-        /// <param name="CountryCodes">CountryCodes.</param>
-        /// <param name="BettingTypes">BettingTypes.</param>
-        /// <param name="TurnInPlayEnabled">TurnInPlayEnabled.</param>
-        /// <param name="MarketTypes">MarketTypes.</param>
-        /// <param name="Venues">Venues.</param>
-        /// <param name="MarketIds">MarketIds.</param>
-        /// <param name="EventTypeIds">EventTypeIds.</param>
-        /// <param name="EventIds">EventIds.</param>
-        /// <param name="BspMarket">BspMarket.</param>
-        public MarketFilter(
-            List<string> CountryCodes = null,
-            List<BettingTypesEnum?> BettingTypes = null,
-            bool? TurnInPlayEnabled = null,
-            List<string> MarketTypes = null,
-            List<string> Venues = null,
-            List<string> MarketIds = null,
-            List<string> EventTypeIds = null,
-            List<string> EventIds = null,
-            bool? BspMarket = null)
-        {
-            this.CountryCodes = CountryCodes;
-            this.BettingTypes = BettingTypes;
-            this.TurnInPlayEnabled = TurnInPlayEnabled;
-            this.MarketTypes = MarketTypes;
-            this.Venues = Venues;
-            this.MarketIds = MarketIds;
-            this.EventTypeIds = EventTypeIds;
-            this.EventIds = EventIds;
-            this.BspMarket = BspMarket;
-        }
-
         [JsonConverter(typeof(StringEnumConverter))]
         public enum BettingTypesEnum
         {
@@ -71,55 +58,55 @@ namespace Betfair.ESASwagger.Model
         ///     Gets or Sets BettingTypes
         /// </summary>
         [DataMember(Name = "bettingTypes", EmitDefaultValue = false)]
-        public List<BettingTypesEnum?> BettingTypes { get; set; }
+        public List<BettingTypesEnum?> BettingTypes { get; set; } = BettingTypes;
 
         /// <summary>
         ///     Gets or Sets BspMarket
         /// </summary>
         [DataMember(Name = "bspMarket", EmitDefaultValue = false)]
-        public bool? BspMarket { get; set; }
+        public bool? BspMarket { get; set; } = BspMarket;
 
         /// <summary>
         ///     Gets or Sets CountryCodes
         /// </summary>
         [DataMember(Name = "countryCodes", EmitDefaultValue = false)]
-        public List<string> CountryCodes { get; set; }
+        public List<string> CountryCodes { get; set; } = CountryCodes;
 
         /// <summary>
         ///     Gets or Sets EventIds
         /// </summary>
         [DataMember(Name = "eventIds", EmitDefaultValue = false)]
-        public List<string> EventIds { get; set; }
+        public List<string> EventIds { get; set; } = EventIds;
 
         /// <summary>
         ///     Gets or Sets EventTypeIds
         /// </summary>
         [DataMember(Name = "eventTypeIds", EmitDefaultValue = false)]
-        public List<string> EventTypeIds { get; set; }
+        public List<string> EventTypeIds { get; set; } = EventTypeIds;
 
         /// <summary>
         ///     Gets or Sets MarketIds
         /// </summary>
         [DataMember(Name = "marketIds", EmitDefaultValue = false)]
-        public List<string> MarketIds { get; set; }
+        public List<string> MarketIds { get; set; } = MarketIds;
 
         /// <summary>
         ///     Gets or Sets MarketTypes
         /// </summary>
         [DataMember(Name = "marketTypes", EmitDefaultValue = false)]
-        public List<string> MarketTypes { get; set; }
+        public List<string> MarketTypes { get; set; } = MarketTypes;
 
         /// <summary>
         ///     Gets or Sets TurnInPlayEnabled
         /// </summary>
         [DataMember(Name = "turnInPlayEnabled", EmitDefaultValue = false)]
-        public bool? TurnInPlayEnabled { get; set; }
+        public bool? TurnInPlayEnabled { get; set; } = TurnInPlayEnabled;
 
         /// <summary>
         ///     Gets or Sets Venues
         /// </summary>
         [DataMember(Name = "venues", EmitDefaultValue = false)]
-        public List<string> Venues { get; set; }
+        public List<string> Venues { get; set; } = Venues;
 
         /// <summary>
         ///     Returns true if objects are equal

@@ -2,14 +2,9 @@
 
 namespace Betfair.ESAClient.Cache
 {
-    public class ReverseComparer<T> : IComparer<T>
+    public class ReverseComparer<T>(IComparer<T> comparer) : IComparer<T>
     {
-        private readonly IComparer<T> _comparer;
-
-        public ReverseComparer(IComparer<T> comparer)
-        {
-            _comparer = comparer;
-        }
+        private readonly IComparer<T> _comparer = comparer;
 
         public int Compare(T x, T y)
         {

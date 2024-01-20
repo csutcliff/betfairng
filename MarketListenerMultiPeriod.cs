@@ -44,7 +44,7 @@ namespace BetfairNG
         {
             foreach (var poll in _polling)
             {
-                if (poll.Value != null) poll.Value.Dispose();
+                poll.Value?.Dispose();
             }
         }
 

@@ -7,34 +7,29 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="ResponseMessage" /> class.
+    ///     Initializes a new instance of the <see cref="ResponseMessage" />class.
+    /// </remarks>
+    /// <param name="Op">The operation type.</param>
+    /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
     [DataContract]
-    public class ResponseMessage : IEquatable<ResponseMessage>
+    public class ResponseMessage(string Op = null, int? Id = null) : IEquatable<ResponseMessage>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ResponseMessage" /> class.
-        ///     Initializes a new instance of the <see cref="ResponseMessage" />class.
-        /// </summary>
-        /// <param name="Op">The operation type.</param>
-        /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
-        public ResponseMessage(string Op = null, int? Id = null)
-        {
-            this.Op = Op;
-            this.Id = Id;
-        }
 
         /// <summary>
         ///     Client generated unique id to link request with response (like json rpc)
         /// </summary>
         /// <value>Client generated unique id to link request with response (like json rpc)</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public int? Id { get; set; }
+        public int? Id { get; set; } = Id;
 
         /// <summary>
         ///     The operation type
         /// </summary>
         /// <value>The operation type</value>
         [DataMember(Name = "op", EmitDefaultValue = false)]
-        public string Op { get; set; }
+        public string Op { get; set; } = Op;
 
         /// <summary>
         ///     Returns true if objects are equal

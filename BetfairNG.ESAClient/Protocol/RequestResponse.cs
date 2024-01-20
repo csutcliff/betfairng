@@ -7,21 +7,14 @@ namespace Betfair.ESAClient.Protocol
     /// <summary>
     /// Wraps a standard completion source to create a pairing of request message to status message
     /// </summary>
-    public class RequestResponse
+    public class RequestResponse(int id, RequestMessage request, Action<RequestResponse> onSuccess)
     {
-        public readonly RequestMessage Request;
+        public readonly RequestMessage Request = request;
         private readonly TaskCompletionSource<StatusMessage> _completionSource = new();
 
-        public RequestResponse(int id, RequestMessage request, Action<RequestResponse> onSuccess)
-        {
-            Id = id;
-            Request = request;
-            OnSuccess = onSuccess;
-        }
+        public int Id { get; private set; } = id;
 
-        public int Id { get; private set; }
-
-        public Action<RequestResponse> OnSuccess { get; set; }
+        public Action<RequestResponse> OnSuccess { get; set; } = onSuccess;
 
         public StatusMessage Result
         {

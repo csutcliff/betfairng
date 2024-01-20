@@ -9,75 +9,66 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="OrderRunnerChange" /> class.
+    ///     Initializes a new instance of the <see cref="OrderRunnerChange" />class.
+    /// </remarks>
+    /// <param name="Mb">Matched Backs - matched amounts by distinct matched price on the Back side for this runner (selection).</param>
+    /// <param name="Uo">Unmatched Orders - orders on this runner (selection) that are not fully matched.</param>
+    /// <param name="Id">Selection Id - the id of the runner (selection).</param>
+    /// <param name="Hc">Handicap - the handicap of the runner (selection) (null if not applicable).</param>
+    /// <param name="FullImage">FullImage.</param>
+    /// <param name="Ml">Matched Lays - matched amounts by distinct matched price on the Lay side for this runner (selection).</param>
     [DataContract]
-    public class OrderRunnerChange : IEquatable<OrderRunnerChange>
+    public class OrderRunnerChange(
+        List<List<double?>> Mb = null,
+        List<Order> Uo = null,
+        long? Id = null,
+        double? Hc = null,
+        bool? FullImage = null,
+        List<List<double?>> Ml = null) : IEquatable<OrderRunnerChange>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="OrderRunnerChange" /> class.
-        ///     Initializes a new instance of the <see cref="OrderRunnerChange" />class.
-        /// </summary>
-        /// <param name="Mb">Matched Backs - matched amounts by distinct matched price on the Back side for this runner (selection).</param>
-        /// <param name="Uo">Unmatched Orders - orders on this runner (selection) that are not fully matched.</param>
-        /// <param name="Id">Selection Id - the id of the runner (selection).</param>
-        /// <param name="Hc">Handicap - the handicap of the runner (selection) (null if not applicable).</param>
-        /// <param name="FullImage">FullImage.</param>
-        /// <param name="Ml">Matched Lays - matched amounts by distinct matched price on the Lay side for this runner (selection).</param>
-        public OrderRunnerChange(
-            List<List<double?>> Mb = null,
-            List<Order> Uo = null,
-            long? Id = null,
-            double? Hc = null,
-            bool? FullImage = null,
-            List<List<double?>> Ml = null)
-        {
-            this.Mb = Mb;
-            this.Uo = Uo;
-            this.Id = Id;
-            this.Hc = Hc;
-            this.FullImage = FullImage;
-            this.Ml = Ml;
-        }
 
         /// <summary>
         ///     Gets or Sets FullImage
         /// </summary>
         [DataMember(Name = "fullImage", EmitDefaultValue = false)]
-        public bool? FullImage { get; set; }
+        public bool? FullImage { get; set; } = FullImage;
 
         /// <summary>
         ///     Handicap - the handicap of the runner (selection) (null if not applicable)
         /// </summary>
         /// <value>Handicap - the handicap of the runner (selection) (null if not applicable)</value>
         [DataMember(Name = "hc", EmitDefaultValue = false)]
-        public double? Hc { get; set; }
+        public double? Hc { get; set; } = Hc;
 
         /// <summary>
         ///     Selection Id - the id of the runner (selection)
         /// </summary>
         /// <value>Selection Id - the id of the runner (selection)</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public long? Id { get; set; }
+        public long? Id { get; set; } = Id;
 
         /// <summary>
         ///     Matched Backs - matched amounts by distinct matched price on the Back side for this runner (selection)
         /// </summary>
         /// <value>Matched Backs - matched amounts by distinct matched price on the Back side for this runner (selection)</value>
         [DataMember(Name = "mb", EmitDefaultValue = false)]
-        public List<List<double?>> Mb { get; set; }
+        public List<List<double?>> Mb { get; set; } = Mb;
 
         /// <summary>
         ///     Matched Lays - matched amounts by distinct matched price on the Lay side for this runner (selection)
         /// </summary>
         /// <value>Matched Lays - matched amounts by distinct matched price on the Lay side for this runner (selection)</value>
         [DataMember(Name = "ml", EmitDefaultValue = false)]
-        public List<List<double?>> Ml { get; set; }
+        public List<List<double?>> Ml { get; set; } = Ml;
 
         /// <summary>
         ///     Unmatched Orders - orders on this runner (selection) that are not fully matched
         /// </summary>
         /// <value>Unmatched Orders - orders on this runner (selection) that are not fully matched</value>
         [DataMember(Name = "uo", EmitDefaultValue = false)]
-        public List<Order> Uo { get; set; }
+        public List<Order> Uo { get; set; } = Uo;
 
         /// <summary>
         ///     Returns true if objects are equal

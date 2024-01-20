@@ -8,37 +8,27 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="RunnerDefinition" /> class.
+    ///     Initializes a new instance of the <see cref="RunnerDefinition" />class.
+    /// </remarks>
+    /// <param name="SortPriority">SortPriority.</param>
+    /// <param name="RemovalDate">RemovalDate.</param>
+    /// <param name="Id">Selection Id - the id of the runner (selection).</param>
+    /// <param name="Hc">Handicap - the handicap of the runner (selection) (null if not applicable).</param>
+    /// <param name="AdjustmentFactor">AdjustmentFactor.</param>
+    /// <param name="Bsp">Bsp.</param>
+    /// <param name="Status">Status.</param>
     [DataContract]
-    public class RunnerDefinition : IEquatable<RunnerDefinition>
+    public class RunnerDefinition(
+        int? SortPriority = null,
+        DateTime? RemovalDate = null,
+        long? Id = null,
+        double? Hc = null,
+        double? AdjustmentFactor = null,
+        double? Bsp = null,
+RunnerDefinition.StatusEnum? Status = null) : IEquatable<RunnerDefinition>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="RunnerDefinition" /> class.
-        ///     Initializes a new instance of the <see cref="RunnerDefinition" />class.
-        /// </summary>
-        /// <param name="SortPriority">SortPriority.</param>
-        /// <param name="RemovalDate">RemovalDate.</param>
-        /// <param name="Id">Selection Id - the id of the runner (selection).</param>
-        /// <param name="Hc">Handicap - the handicap of the runner (selection) (null if not applicable).</param>
-        /// <param name="AdjustmentFactor">AdjustmentFactor.</param>
-        /// <param name="Bsp">Bsp.</param>
-        /// <param name="Status">Status.</param>
-        public RunnerDefinition(
-            int? SortPriority = null,
-            DateTime? RemovalDate = null,
-            long? Id = null,
-            double? Hc = null,
-            double? AdjustmentFactor = null,
-            double? Bsp = null,
-            StatusEnum? Status = null)
-        {
-            this.SortPriority = SortPriority;
-            this.RemovalDate = RemovalDate;
-            this.Id = Id;
-            this.Hc = Hc;
-            this.AdjustmentFactor = AdjustmentFactor;
-            this.Bsp = Bsp;
-            this.Status = Status;
-        }
 
         /// <summary>
         ///     Gets or Sets Status
@@ -72,45 +62,45 @@ namespace Betfair.ESASwagger.Model
         ///     Gets or Sets AdjustmentFactor
         /// </summary>
         [DataMember(Name = "adjustmentFactor", EmitDefaultValue = false)]
-        public double? AdjustmentFactor { get; set; }
+        public double? AdjustmentFactor { get; set; } = AdjustmentFactor;
 
         /// <summary>
         ///     Gets or Sets Bsp
         /// </summary>
         [DataMember(Name = "bsp", EmitDefaultValue = false)]
-        public double? Bsp { get; set; }
+        public double? Bsp { get; set; } = Bsp;
 
         /// <summary>
         ///     Handicap - the handicap of the runner (selection) (null if not applicable)
         /// </summary>
         /// <value>Handicap - the handicap of the runner (selection) (null if not applicable)</value>
         [DataMember(Name = "hc", EmitDefaultValue = false)]
-        public double? Hc { get; set; }
+        public double? Hc { get; set; } = Hc;
 
         /// <summary>
         ///     Selection Id - the id of the runner (selection)
         /// </summary>
         /// <value>Selection Id - the id of the runner (selection)</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public long? Id { get; set; }
+        public long? Id { get; set; } = Id;
 
         /// <summary>
         ///     Gets or Sets RemovalDate
         /// </summary>
         [DataMember(Name = "removalDate", EmitDefaultValue = false)]
-        public DateTime? RemovalDate { get; set; }
+        public DateTime? RemovalDate { get; set; } = RemovalDate;
 
         /// <summary>
         ///     Gets or Sets SortPriority
         /// </summary>
         [DataMember(Name = "sortPriority", EmitDefaultValue = false)]
-        public int? SortPriority { get; set; }
+        public int? SortPriority { get; set; } = SortPriority;
 
         /// <summary>
         ///     Gets or Sets Status
         /// </summary>
         [DataMember(Name = "status", EmitDefaultValue = false)]
-        public StatusEnum? Status { get; set; }
+        public StatusEnum? Status { get; set; } = Status;
 
         /// <summary>
         ///     Returns true if objects are equal

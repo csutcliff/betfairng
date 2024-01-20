@@ -50,8 +50,7 @@ namespace BetfairNG
             PriceProjection priceProjection,
             int connectionCount, int samplePeriod = 0)
         {
-            if (listener == null)
-                listener = new MarketListener(client, priceProjection, connectionCount, samplePeriod);
+            listener ??= new MarketListener(client, priceProjection, connectionCount, samplePeriod);
 
             return listener;
         }

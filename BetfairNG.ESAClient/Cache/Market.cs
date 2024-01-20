@@ -8,20 +8,19 @@ namespace Betfair.ESAClient.Cache
     /// Thread safe, reference invariant reference to a market.
     /// Repeatedly calling <see cref="Snap"/> will return atomic snapshots of the market.
     /// </summary>
-    public class Market
+    public class Market(MarketCache marketCache, string marketId)
     {
-        private readonly MarketCache _marketCache;
-        private readonly string _marketId;
-        private readonly Dictionary<RunnerId, MarketRunner> _marketRunners = new();
-        private MarketDefinition _marketDefinition;
-        private MarketSnap _snap;
-        private double _tv;
+        private readonly MarketCache _marketCache = marketCache;
 
-        public Market(MarketCache marketCache, string marketId)
-        {
-            _marketCache = marketCache;
-            _marketId = marketId;
-        }
+        private readonly string _marketId = marketId;
+
+        private readonly Dictionary<RunnerId, MarketRunner> _marketRunners = [];
+
+        private MarketDefinition _marketDefinition;
+
+        private MarketSnap _snap;
+
+        private double _tv;
 
         /// <summary>
         /// Whether the market is closed.

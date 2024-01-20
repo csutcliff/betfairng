@@ -29,8 +29,8 @@ namespace ConsoleExample
 
         public void Dispose()
         {
-            if (_marketSubscription1 != null) _marketSubscription1.Dispose();
-            if (_marketSubscription2 != null) _marketSubscription2.Dispose();
+            _marketSubscription1?.Dispose();
+            _marketSubscription2?.Dispose();
         }
 
         public void Go()

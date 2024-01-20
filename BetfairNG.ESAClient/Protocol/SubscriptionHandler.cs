@@ -15,26 +15,16 @@ namespace Betfair.ESAClient.Protocol
     /// <typeparam name="S">Subscription request message type</typeparam>
     /// <typeparam name="C">Change message type</typeparam>
     /// <typeparam name="I">Change message item type</typeparam>
-    public class SubscriptionHandler<S, C, I> where C : ChangeMessage<I> where S : RequestMessage
+    public class SubscriptionHandler<S, C, I>(int id, S subscriptionMessage, bool isMergeSegments) where C : ChangeMessage<I> where S : RequestMessage
     {
-        private readonly bool _isMergeSegments;
+        private readonly bool _isMergeSegments = isMergeSegments;
         private bool _isSubscribed;
         private int _itemCount;
         private List<I> _mergedChanges;
         private readonly TaskCompletionSource<bool> _subscriptionComplete = new();
-        private readonly int _subscriptionId;
-        private readonly Stopwatch _ttfm;
-        private readonly Stopwatch _ttlm;
-
-        public SubscriptionHandler(int id, S subscriptionMessage, bool isMergeSegments)
-        {
-            SubscriptionMessage = subscriptionMessage;
-            _isMergeSegments = isMergeSegments;
-            IsSubscribed = false;
-            _subscriptionId = id;
-            _ttfm = Stopwatch.StartNew();
-            _ttlm = Stopwatch.StartNew();
-        }
+        private readonly int _subscriptionId = id;
+        private readonly Stopwatch _ttfm = Stopwatch.StartNew();
+        private readonly Stopwatch _ttlm = Stopwatch.StartNew();
 
         public string Clk { get; private set; }
 
@@ -46,7 +36,7 @@ namespace Betfair.ESAClient.Protocol
 
         public string InitialClk { get; private set; }
 
-        public bool IsSubscribed { get; private set; }
+        public bool IsSubscribed { get; private set; } = false;
 
         public DateTime LastArrivalTime { get; private set; }
 
@@ -60,7 +50,7 @@ namespace Betfair.ESAClient.Protocol
             }
         }
 
-        public S SubscriptionMessage { get; private set; }
+        public S SubscriptionMessage { get; private set; } = subscriptionMessage;
 
         public C ProcessChangeMessage(C changeMessage)
         {
@@ -149,7 +139,7 @@ namespace Betfair.ESAClient.Protocol
             if (changeMessage.SegmentType == SegmentType.SEG_START)
             {
                 //start merging
-                _mergedChanges = new List<I>();
+                _mergedChanges = [];
             }
             //accumulate
             _mergedChanges.AddRange(changeMessage.Items);

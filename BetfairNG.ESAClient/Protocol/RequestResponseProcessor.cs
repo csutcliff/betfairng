@@ -108,7 +108,7 @@ namespace Betfair.ESAClient.Protocol
 
             set
             {
-                if (_marketSubscriptionHandler != null) _marketSubscriptionHandler.Cancel();
+                _marketSubscriptionHandler?.Cancel();
                 _marketSubscriptionHandler = value;
                 if (value != null) Status = ConnectionStatus.SUBSCRIBED;
             }
@@ -138,7 +138,7 @@ namespace Betfair.ESAClient.Protocol
 
             set
             {
-                if (_orderSubscriptionHandler != null) _orderSubscriptionHandler.Cancel();
+                _orderSubscriptionHandler?.Cancel();
                 _orderSubscriptionHandler = value;
                 if (value != null) Status = ConnectionStatus.SUBSCRIBED;
             }

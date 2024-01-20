@@ -8,37 +8,27 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="StatusMessage" /> class.
+    ///     Initializes a new instance of the <see cref="StatusMessage" />class.
+    /// </remarks>
+    /// <param name="Op">The operation type.</param>
+    /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
+    /// <param name="ErrorMessage">Additional message in case of a failure.</param>
+    /// <param name="ErrorCode">The type of error in case of a failure.</param>
+    /// <param name="ConnectionId">The connection id.</param>
+    /// <param name="ConnectionClosed">Is the connection now closed.</param>
+    /// <param name="StatusCode">The status of the last request.</param>
     [DataContract]
-    public class StatusMessage : ResponseMessage, IEquatable<StatusMessage>
+    public class StatusMessage(
+        string Op = null,
+        int? Id = null,
+        string ErrorMessage = null,
+StatusMessage.ErrorCodeEnum? ErrorCode = null,
+        string ConnectionId = null,
+        bool? ConnectionClosed = null,
+StatusMessage.StatusCodeEnum? StatusCode = null) : ResponseMessage, IEquatable<StatusMessage>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="StatusMessage" /> class.
-        ///     Initializes a new instance of the <see cref="StatusMessage" />class.
-        /// </summary>
-        /// <param name="Op">The operation type.</param>
-        /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
-        /// <param name="ErrorMessage">Additional message in case of a failure.</param>
-        /// <param name="ErrorCode">The type of error in case of a failure.</param>
-        /// <param name="ConnectionId">The connection id.</param>
-        /// <param name="ConnectionClosed">Is the connection now closed.</param>
-        /// <param name="StatusCode">The status of the last request.</param>
-        public StatusMessage(
-            string Op = null,
-            int? Id = null,
-            string ErrorMessage = null,
-            ErrorCodeEnum? ErrorCode = null,
-            string ConnectionId = null,
-            bool? ConnectionClosed = null,
-            StatusCodeEnum? StatusCode = null)
-        {
-            this.Op = Op;
-            this.Id = Id;
-            this.ErrorMessage = ErrorMessage;
-            this.ErrorCode = ErrorCode;
-            this.ConnectionId = ConnectionId;
-            this.ConnectionClosed = ConnectionClosed;
-            this.StatusCode = StatusCode;
-        }
 
         /// <summary>
         ///     The type of error in case of a failure
@@ -106,49 +96,49 @@ namespace Betfair.ESASwagger.Model
         /// </summary>
         /// <value>Is the connection now closed</value>
         [DataMember(Name = "connectionClosed", EmitDefaultValue = false)]
-        public bool? ConnectionClosed { get; set; }
+        public bool? ConnectionClosed { get; set; } = ConnectionClosed;
 
         /// <summary>
         ///     The connection id
         /// </summary>
         /// <value>The connection id</value>
         [DataMember(Name = "connectionId", EmitDefaultValue = false)]
-        public string ConnectionId { get; set; }
+        public string ConnectionId { get; set; } = ConnectionId;
 
         /// <summary>
         ///     The type of error in case of a failure
         /// </summary>
         /// <value>The type of error in case of a failure</value>
         [DataMember(Name = "errorCode", EmitDefaultValue = false)]
-        public ErrorCodeEnum? ErrorCode { get; set; }
+        public ErrorCodeEnum? ErrorCode { get; set; } = ErrorCode;
 
         /// <summary>
         ///     Additional message in case of a failure
         /// </summary>
         /// <value>Additional message in case of a failure</value>
         [DataMember(Name = "errorMessage", EmitDefaultValue = false)]
-        public string ErrorMessage { get; set; }
+        public string ErrorMessage { get; set; } = ErrorMessage;
 
         /// <summary>
         ///     Client generated unique id to link request with response (like json rpc)
         /// </summary>
         /// <value>Client generated unique id to link request with response (like json rpc)</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public new int? Id { get; set; }
+        public new int? Id { get; set; } = Id;
 
         /// <summary>
         ///     The operation type
         /// </summary>
         /// <value>The operation type</value>
         [DataMember(Name = "op", EmitDefaultValue = false)]
-        public new string Op { get; set; }
+        public new string Op { get; set; } = Op;
 
         /// <summary>
         ///     The status of the last request
         /// </summary>
         /// <value>The status of the last request</value>
         [DataMember(Name = "statusCode", EmitDefaultValue = false)]
-        public StatusCodeEnum? StatusCode { get; set; }
+        public StatusCodeEnum? StatusCode { get; set; } = StatusCode;
 
         /// <summary>
         ///     Returns true if objects are equal

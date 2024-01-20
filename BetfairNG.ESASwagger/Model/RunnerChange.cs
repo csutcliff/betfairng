@@ -9,166 +9,148 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="RunnerChange" /> class.
+    ///     Initializes a new instance of the <see cref="RunnerChange" />class.
+    /// </remarks>
+    /// <param name="Tv">The total amount matched. This value is truncated at 2dp..</param>
+    /// <param name="Batb">Best Available To Back - LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove).</param>
+    /// <param name="Spb">Starting Price Back - PriceVol tuple delta of price changes (0 vol is remove).</param>
+    /// <param name="Bdatl">Best Display Available To Lay (includes virtual prices)- LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove).</param>
+    /// <param name="Trd">Traded - PriceVol tuple delta of price changes (0 vol is remove).</param>
+    /// <param name="Spf">Starting Price Far - The far starting price (or null if un-changed).</param>
+    /// <param name="Ltp">Last Traded Price - The last traded price (or null if un-changed).</param>
+    /// <param name="Atb">Available To Back - PriceVol tuple delta of price changes (0 vol is remove).</param>
+    /// <param name="Spl">Starting Price Lay - PriceVol tuple delta of price changes (0 vol is remove).</param>
+    /// <param name="Spn">Starting Price Near - The far starting price (or null if un-changed).</param>
+    /// <param name="Atl">Available To Lay - PriceVol tuple delta of price changes (0 vol is remove).</param>
+    /// <param name="Batl">Best Available To Lay - LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove).</param>
+    /// <param name="Id">Selection Id - the id of the runner (selection).</param>
+    /// <param name="Hc">Handicap - the handicap of the runner (selection) (null if not applicable).</param>
+    /// <param name="Bdatb">Best Display Available To Back (includes virtual prices)- LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove).</param>
     [DataContract]
-    public class RunnerChange : IEquatable<RunnerChange>
+    public class RunnerChange(
+        double? Tv = null,
+        List<List<double?>> Batb = null,
+        List<List<double?>> Spb = null,
+        List<List<double?>> Bdatl = null,
+        List<List<double?>> Trd = null,
+        double? Spf = null,
+        double? Ltp = null,
+        List<List<double?>> Atb = null,
+        List<List<double?>> Spl = null,
+        double? Spn = null,
+        List<List<double?>> Atl = null,
+        List<List<double?>> Batl = null,
+        long? Id = null,
+        double? Hc = null,
+        List<List<double?>> Bdatb = null) : IEquatable<RunnerChange>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="RunnerChange" /> class.
-        ///     Initializes a new instance of the <see cref="RunnerChange" />class.
-        /// </summary>
-        /// <param name="Tv">The total amount matched. This value is truncated at 2dp..</param>
-        /// <param name="Batb">Best Available To Back - LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove).</param>
-        /// <param name="Spb">Starting Price Back - PriceVol tuple delta of price changes (0 vol is remove).</param>
-        /// <param name="Bdatl">Best Display Available To Lay (includes virtual prices)- LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove).</param>
-        /// <param name="Trd">Traded - PriceVol tuple delta of price changes (0 vol is remove).</param>
-        /// <param name="Spf">Starting Price Far - The far starting price (or null if un-changed).</param>
-        /// <param name="Ltp">Last Traded Price - The last traded price (or null if un-changed).</param>
-        /// <param name="Atb">Available To Back - PriceVol tuple delta of price changes (0 vol is remove).</param>
-        /// <param name="Spl">Starting Price Lay - PriceVol tuple delta of price changes (0 vol is remove).</param>
-        /// <param name="Spn">Starting Price Near - The far starting price (or null if un-changed).</param>
-        /// <param name="Atl">Available To Lay - PriceVol tuple delta of price changes (0 vol is remove).</param>
-        /// <param name="Batl">Best Available To Lay - LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove).</param>
-        /// <param name="Id">Selection Id - the id of the runner (selection).</param>
-        /// <param name="Hc">Handicap - the handicap of the runner (selection) (null if not applicable).</param>
-        /// <param name="Bdatb">Best Display Available To Back (includes virtual prices)- LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove).</param>
-        public RunnerChange(
-            double? Tv = null,
-            List<List<double?>> Batb = null,
-            List<List<double?>> Spb = null,
-            List<List<double?>> Bdatl = null,
-            List<List<double?>> Trd = null,
-            double? Spf = null,
-            double? Ltp = null,
-            List<List<double?>> Atb = null,
-            List<List<double?>> Spl = null,
-            double? Spn = null,
-            List<List<double?>> Atl = null,
-            List<List<double?>> Batl = null,
-            long? Id = null,
-            double? Hc = null,
-            List<List<double?>> Bdatb = null)
-        {
-            this.Tv = Tv;
-            this.Batb = Batb;
-            this.Spb = Spb;
-            this.Bdatl = Bdatl;
-            this.Trd = Trd;
-            this.Spf = Spf;
-            this.Ltp = Ltp;
-            this.Atb = Atb;
-            this.Spl = Spl;
-            this.Spn = Spn;
-            this.Atl = Atl;
-            this.Batl = Batl;
-            this.Id = Id;
-            this.Hc = Hc;
-            this.Bdatb = Bdatb;
-        }
 
         /// <summary>
         ///     Available To Back - PriceVol tuple delta of price changes (0 vol is remove)
         /// </summary>
         /// <value>Available To Back - PriceVol tuple delta of price changes (0 vol is remove)</value>
         [DataMember(Name = "atb", EmitDefaultValue = false)]
-        public List<List<double?>> Atb { get; set; }
+        public List<List<double?>> Atb { get; set; } = Atb;
 
         /// <summary>
         ///     Available To Lay - PriceVol tuple delta of price changes (0 vol is remove)
         /// </summary>
         /// <value>Available To Lay - PriceVol tuple delta of price changes (0 vol is remove)</value>
         [DataMember(Name = "atl", EmitDefaultValue = false)]
-        public List<List<double?>> Atl { get; set; }
+        public List<List<double?>> Atl { get; set; } = Atl;
 
         /// <summary>
         ///     Best Available To Back - LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove)
         /// </summary>
         /// <value>Best Available To Back - LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove)</value>
         [DataMember(Name = "batb", EmitDefaultValue = false)]
-        public List<List<double?>> Batb { get; set; }
+        public List<List<double?>> Batb { get; set; } = Batb;
 
         /// <summary>
         ///     Best Available To Lay - LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove)
         /// </summary>
         /// <value>Best Available To Lay - LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove)</value>
         [DataMember(Name = "batl", EmitDefaultValue = false)]
-        public List<List<double?>> Batl { get; set; }
+        public List<List<double?>> Batl { get; set; } = Batl;
 
         /// <summary>
         ///     Best Display Available To Back (includes virtual prices)- LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove)
         /// </summary>
         /// <value>Best Display Available To Back (includes virtual prices)- LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove)</value>
         [DataMember(Name = "bdatb", EmitDefaultValue = false)]
-        public List<List<double?>> Bdatb { get; set; }
+        public List<List<double?>> Bdatb { get; set; } = Bdatb;
 
         /// <summary>
         ///     Best Display Available To Lay (includes virtual prices)- LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove)
         /// </summary>
         /// <value>Best Display Available To Lay (includes virtual prices)- LevelPriceVol triple delta of price changes, keyed by level (0 vol is remove)</value>
         [DataMember(Name = "bdatl", EmitDefaultValue = false)]
-        public List<List<double?>> Bdatl { get; set; }
+        public List<List<double?>> Bdatl { get; set; } = Bdatl;
 
         /// <summary>
         ///     Handicap - the handicap of the runner (selection) (null if not applicable)
         /// </summary>
         /// <value>Handicap - the handicap of the runner (selection) (null if not applicable)</value>
         [DataMember(Name = "hc", EmitDefaultValue = false)]
-        public double? Hc { get; set; }
+        public double? Hc { get; set; } = Hc;
 
         /// <summary>
         ///     Selection Id - the id of the runner (selection)
         /// </summary>
         /// <value>Selection Id - the id of the runner (selection)</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public long? Id { get; set; }
+        public long? Id { get; set; } = Id;
 
         /// <summary>
         ///     Last Traded Price - The last traded price (or null if un-changed)
         /// </summary>
         /// <value>Last Traded Price - The last traded price (or null if un-changed)</value>
         [DataMember(Name = "ltp", EmitDefaultValue = false)]
-        public double? Ltp { get; set; }
+        public double? Ltp { get; set; } = Ltp;
 
         /// <summary>
         ///     Starting Price Back - PriceVol tuple delta of price changes (0 vol is remove)
         /// </summary>
         /// <value>Starting Price Back - PriceVol tuple delta of price changes (0 vol is remove)</value>
         [DataMember(Name = "spb", EmitDefaultValue = false)]
-        public List<List<double?>> Spb { get; set; }
+        public List<List<double?>> Spb { get; set; } = Spb;
 
         /// <summary>
         ///     Starting Price Far - The far starting price (or null if un-changed)
         /// </summary>
         /// <value>Starting Price Far - The far starting price (or null if un-changed)</value>
         [DataMember(Name = "spf", EmitDefaultValue = false)]
-        public double? Spf { get; set; }
+        public double? Spf { get; set; } = Spf;
 
         /// <summary>
         ///     Starting Price Lay - PriceVol tuple delta of price changes (0 vol is remove)
         /// </summary>
         /// <value>Starting Price Lay - PriceVol tuple delta of price changes (0 vol is remove)</value>
         [DataMember(Name = "spl", EmitDefaultValue = false)]
-        public List<List<double?>> Spl { get; set; }
+        public List<List<double?>> Spl { get; set; } = Spl;
 
         /// <summary>
         ///     Starting Price Near - The far starting price (or null if un-changed)
         /// </summary>
         /// <value>Starting Price Near - The far starting price (or null if un-changed)</value>
         [DataMember(Name = "spn", EmitDefaultValue = false)]
-        public double? Spn { get; set; }
+        public double? Spn { get; set; } = Spn;
 
         /// <summary>
         ///     Traded - PriceVol tuple delta of price changes (0 vol is remove)
         /// </summary>
         /// <value>Traded - PriceVol tuple delta of price changes (0 vol is remove)</value>
         [DataMember(Name = "trd", EmitDefaultValue = false)]
-        public List<List<double?>> Trd { get; set; }
+        public List<List<double?>> Trd { get; set; } = Trd;
 
         /// <summary>
         ///     The total amount matched. This value is truncated at 2dp.
         /// </summary>
         /// <value>The total amount matched. This value is truncated at 2dp.</value>
         [DataMember(Name = "tv", EmitDefaultValue = false)]
-        public double? Tv { get; set; }
+        public double? Tv { get; set; } = Tv;
 
         /// <summary>
         ///     Returns true if objects are equal

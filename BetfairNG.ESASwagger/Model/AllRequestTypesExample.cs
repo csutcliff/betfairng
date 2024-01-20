@@ -8,31 +8,23 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="AllRequestTypesExample" /> class.
+    ///     Initializes a new instance of the <see cref="AllRequestTypesExample" />class.
+    /// </remarks>
+    /// <param name="OpTypes">OpTypes.</param>
+    /// <param name="Heartbeat">Heartbeat.</param>
+    /// <param name="OrderSubscriptionMessage">OrderSubscriptionMessage.</param>
+    /// <param name="MarketSubscription">MarketSubscription.</param>
+    /// <param name="Authentication">Authentication.</param>
     [DataContract]
-    public class AllRequestTypesExample : IEquatable<AllRequestTypesExample>
+    public class AllRequestTypesExample(
+AllRequestTypesExample.OpTypesEnum? OpTypes = null,
+        HeartbeatMessage Heartbeat = null,
+        OrderSubscriptionMessage OrderSubscriptionMessage = null,
+        MarketSubscriptionMessage MarketSubscription = null,
+        AuthenticationMessage Authentication = null) : IEquatable<AllRequestTypesExample>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="AllRequestTypesExample" /> class.
-        ///     Initializes a new instance of the <see cref="AllRequestTypesExample" />class.
-        /// </summary>
-        /// <param name="OpTypes">OpTypes.</param>
-        /// <param name="Heartbeat">Heartbeat.</param>
-        /// <param name="OrderSubscriptionMessage">OrderSubscriptionMessage.</param>
-        /// <param name="MarketSubscription">MarketSubscription.</param>
-        /// <param name="Authentication">Authentication.</param>
-        public AllRequestTypesExample(
-            OpTypesEnum? OpTypes = null,
-            HeartbeatMessage Heartbeat = null,
-            OrderSubscriptionMessage OrderSubscriptionMessage = null,
-            MarketSubscriptionMessage MarketSubscription = null,
-            AuthenticationMessage Authentication = null)
-        {
-            this.OpTypes = OpTypes;
-            this.Heartbeat = Heartbeat;
-            this.OrderSubscriptionMessage = OrderSubscriptionMessage;
-            this.MarketSubscription = MarketSubscription;
-            this.Authentication = Authentication;
-        }
 
         /// <summary>
         ///     Gets or Sets OpTypes
@@ -57,31 +49,31 @@ namespace Betfair.ESASwagger.Model
         ///     Gets or Sets Authentication
         /// </summary>
         [DataMember(Name = "authentication", EmitDefaultValue = false)]
-        public AuthenticationMessage Authentication { get; set; }
+        public AuthenticationMessage Authentication { get; set; } = Authentication;
 
         /// <summary>
         ///     Gets or Sets Heartbeat
         /// </summary>
         [DataMember(Name = "heartbeat", EmitDefaultValue = false)]
-        public HeartbeatMessage Heartbeat { get; set; }
+        public HeartbeatMessage Heartbeat { get; set; } = Heartbeat;
 
         /// <summary>
         ///     Gets or Sets MarketSubscription
         /// </summary>
         [DataMember(Name = "marketSubscription", EmitDefaultValue = false)]
-        public MarketSubscriptionMessage MarketSubscription { get; set; }
+        public MarketSubscriptionMessage MarketSubscription { get; set; } = MarketSubscription;
 
         /// <summary>
         ///     Gets or Sets OpTypes
         /// </summary>
         [DataMember(Name = "opTypes", EmitDefaultValue = false)]
-        public OpTypesEnum? OpTypes { get; set; }
+        public OpTypesEnum? OpTypes { get; set; } = OpTypes;
 
         /// <summary>
         ///     Gets or Sets OrderSubscriptionMessage
         /// </summary>
         [DataMember(Name = "orderSubscriptionMessage", EmitDefaultValue = false)]
-        public OrderSubscriptionMessage OrderSubscriptionMessage { get; set; }
+        public OrderSubscriptionMessage OrderSubscriptionMessage { get; set; } = OrderSubscriptionMessage;
 
         /// <summary>
         ///     Returns true if objects are equal

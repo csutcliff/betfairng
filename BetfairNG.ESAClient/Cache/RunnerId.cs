@@ -1,15 +1,9 @@
 ﻿namespace Betfair.ESAClient.Cache
 {
-    public class RunnerId
+    public class RunnerId(long? selectionId, double? handicap)
     {
-        private readonly double? _handicap;
-        private readonly long _selectionId;
-
-        public RunnerId(long? selectionId, double? handicap)
-        {
-            _selectionId = (long)selectionId;
-            _handicap = handicap;
-        }
+        private readonly double? _handicap = handicap;
+        private readonly long _selectionId = (long)selectionId;
 
         public double? Handicap
         {

@@ -106,7 +106,7 @@ namespace Betfair.ESAClient.Cache
                     if (IsMarketRemovedOnClose && market.IsClosed)
                     {
                         //remove on close
-                        _markets.TryRemove(market.MarketId, out Market removed);
+                        _markets.TryRemove(market.MarketId, out Market _);
                     }
 
                     //lazy build events
@@ -117,10 +117,7 @@ namespace Betfair.ESAClient.Cache
                         {
                             DispatchMarketChanged(arg);
                         }
-                        if (batch != null)
-                        {
-                            batch.Add(arg);
-                        }
+                        batch?.Add(arg);
                     }
                 }
                 if (batch != null)

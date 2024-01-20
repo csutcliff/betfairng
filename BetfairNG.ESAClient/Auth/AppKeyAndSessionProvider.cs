@@ -10,27 +10,16 @@ namespace Betfair.ESAClient.Auth
     /// <summary>
     /// Utility class to provide a session & token via identity SSO
     /// </summary>
-    public class AppKeyAndSessionProvider
+    public class AppKeyAndSessionProvider(string ssoHost, string appkey, string username, string password)
     {
         public const string SSO_HOST_COM = "identitysso.betfair.com";
         public const string SSO_HOST_ES = "identitysso.betfair.es";
         public const string SSO_HOST_IT = "identitysso.betfair.it";
-        private readonly string _appkey;
-        private readonly string _host;
-        private readonly string _password;
-        private readonly string _username;
+        private readonly string _appkey = appkey;
+        private readonly string _host = ssoHost;
+        private readonly string _password = password;
+        private readonly string _username = username;
         private AppKeyAndSession _session;
-
-        public AppKeyAndSessionProvider(string ssoHost, string appkey, string username, string password)
-        {
-            _host = ssoHost;
-            _appkey = appkey;
-            _username = username;
-            _password = password;
-            Timeout = TimeSpan.FromSeconds(30);
-            //4hrs is normal expire time
-            SessionExpireTime = TimeSpan.FromHours(3);
-        }
 
         /// <summary>
         /// AppKey being used
@@ -43,12 +32,12 @@ namespace Betfair.ESAClient.Auth
         /// <summary>
         /// Session expire time (default 3hrs)
         /// </summary>
-        public TimeSpan SessionExpireTime { get; set; }
+        public TimeSpan SessionExpireTime { get; set; } = TimeSpan.FromHours(3);
 
         /// <summary>
         /// Specifies the timeout
         /// </summary>
-        public TimeSpan Timeout { get; set; }
+        public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(30);
 
         /// <summary>
         /// Expires cached token

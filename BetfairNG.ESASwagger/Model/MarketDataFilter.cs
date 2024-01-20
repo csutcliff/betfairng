@@ -10,21 +10,15 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="MarketDataFilter" /> class.
+    ///     Initializes a new instance of the <see cref="MarketDataFilter" />class.
+    /// </remarks>
+    /// <param name="LadderLevels">LadderLevels.</param>
+    /// <param name="Fields">Fields.</param>
     [DataContract]
-    public class MarketDataFilter : IEquatable<MarketDataFilter>
+    public class MarketDataFilter(int? LadderLevels = null, List<MarketDataFilter.FieldsEnum?> Fields = null) : IEquatable<MarketDataFilter>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="MarketDataFilter" /> class.
-        ///     Initializes a new instance of the <see cref="MarketDataFilter" />class.
-        /// </summary>
-        /// <param name="LadderLevels">LadderLevels.</param>
-        /// <param name="Fields">Fields.</param>
-        public MarketDataFilter(int? LadderLevels = null, List<FieldsEnum?> Fields = null)
-        {
-            this.LadderLevels = LadderLevels;
-            this.Fields = Fields;
-        }
-
         [JsonConverter(typeof(StringEnumConverter))]
         public enum FieldsEnum
         {
@@ -60,13 +54,13 @@ namespace Betfair.ESASwagger.Model
         ///     Gets or Sets Fields
         /// </summary>
         [DataMember(Name = "fields", EmitDefaultValue = false)]
-        public List<FieldsEnum?> Fields { get; set; }
+        public List<FieldsEnum?> Fields { get; set; } = Fields;
 
         /// <summary>
         ///     Gets or Sets LadderLevels
         /// </summary>
         [DataMember(Name = "ladderLevels", EmitDefaultValue = false)]
-        public int? LadderLevels { get; set; }
+        public int? LadderLevels { get; set; } = LadderLevels;
 
         /// <summary>
         ///     Returns true if objects are equal

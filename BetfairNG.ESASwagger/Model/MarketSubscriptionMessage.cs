@@ -7,104 +7,92 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="MarketSubscriptionMessage" /> class.
+    ///     Initializes a new instance of the <see cref="MarketSubscriptionMessage" />class.
+    /// </remarks>
+    /// <param name="Op">The operation type.</param>
+    /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
+    /// <param name="SegmentationEnabled">Segmentation Enabled - allow the server to send large sets of data in segments, instead of a single block.</param>
+    /// <param name="Clk">Token value delta (received in MarketChangeMessage) that should be passed to resume a subscription.</param>
+    /// <param name="HeartbeatMs">Heartbeat Milliseconds - the heartbeat rate (looped back on initial image after validation: bounds are 500 to 30000).</param>
+    /// <param name="InitialClk">Token value (received in initial MarketChangeMessage) that should be passed to resume a subscription.</param>
+    /// <param name="MarketFilter">MarketFilter.</param>
+    /// <param name="ConflateMs">Conflate Milliseconds - the conflation rate (looped back on initial image after validation: bounds are 0 to 120000).</param>
+    /// <param name="MarketDataFilter">MarketDataFilter.</param>
     [DataContract]
-    public class MarketSubscriptionMessage : RequestMessage, IEquatable<MarketSubscriptionMessage>
+    public class MarketSubscriptionMessage(
+        string Op = null,
+        int? Id = null,
+        bool? SegmentationEnabled = null,
+        string Clk = null,
+        long? HeartbeatMs = null,
+        string InitialClk = null,
+        MarketFilter MarketFilter = null,
+        long? ConflateMs = null,
+        MarketDataFilter MarketDataFilter = null) : RequestMessage, IEquatable<MarketSubscriptionMessage>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="MarketSubscriptionMessage" /> class.
-        ///     Initializes a new instance of the <see cref="MarketSubscriptionMessage" />class.
-        /// </summary>
-        /// <param name="Op">The operation type.</param>
-        /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
-        /// <param name="SegmentationEnabled">Segmentation Enabled - allow the server to send large sets of data in segments, instead of a single block.</param>
-        /// <param name="Clk">Token value delta (received in MarketChangeMessage) that should be passed to resume a subscription.</param>
-        /// <param name="HeartbeatMs">Heartbeat Milliseconds - the heartbeat rate (looped back on initial image after validation: bounds are 500 to 30000).</param>
-        /// <param name="InitialClk">Token value (received in initial MarketChangeMessage) that should be passed to resume a subscription.</param>
-        /// <param name="MarketFilter">MarketFilter.</param>
-        /// <param name="ConflateMs">Conflate Milliseconds - the conflation rate (looped back on initial image after validation: bounds are 0 to 120000).</param>
-        /// <param name="MarketDataFilter">MarketDataFilter.</param>
-        public MarketSubscriptionMessage(
-            string Op = null,
-            int? Id = null,
-            bool? SegmentationEnabled = null,
-            string Clk = null,
-            long? HeartbeatMs = null,
-            string InitialClk = null,
-            MarketFilter MarketFilter = null,
-            long? ConflateMs = null,
-            MarketDataFilter MarketDataFilter = null)
-        {
-            this.Op = Op;
-            this.Id = Id;
-            this.SegmentationEnabled = SegmentationEnabled;
-            this.Clk = Clk;
-            this.HeartbeatMs = HeartbeatMs;
-            this.InitialClk = InitialClk;
-            this.MarketFilter = MarketFilter;
-            this.ConflateMs = ConflateMs;
-            this.MarketDataFilter = MarketDataFilter;
-        }
 
         /// <summary>
         ///     Token value delta (received in MarketChangeMessage) that should be passed to resume a subscription
         /// </summary>
         /// <value>Token value delta (received in MarketChangeMessage) that should be passed to resume a subscription</value>
         [DataMember(Name = "clk", EmitDefaultValue = false)]
-        public string Clk { get; set; }
+        public string Clk { get; set; } = Clk;
 
         /// <summary>
         ///     Conflate Milliseconds - the conflation rate (looped back on initial image after validation: bounds are 0 to 120000)
         /// </summary>
         /// <value>Conflate Milliseconds - the conflation rate (looped back on initial image after validation: bounds are 0 to 120000)</value>
         [DataMember(Name = "conflateMs", EmitDefaultValue = false)]
-        public long? ConflateMs { get; set; }
+        public long? ConflateMs { get; set; } = ConflateMs;
 
         /// <summary>
         ///     Heartbeat Milliseconds - the heartbeat rate (looped back on initial image after validation: bounds are 500 to 30000)
         /// </summary>
         /// <value>Heartbeat Milliseconds - the heartbeat rate (looped back on initial image after validation: bounds are 500 to 30000)</value>
         [DataMember(Name = "heartbeatMs", EmitDefaultValue = false)]
-        public long? HeartbeatMs { get; set; }
+        public long? HeartbeatMs { get; set; } = HeartbeatMs;
 
         /// <summary>
         ///     Client generated unique id to link request with response (like json rpc)
         /// </summary>
         /// <value>Client generated unique id to link request with response (like json rpc)</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public new int? Id { get; set; }
+        public new int? Id { get; set; } = Id;
 
         /// <summary>
         ///     Token value (received in initial MarketChangeMessage) that should be passed to resume a subscription
         /// </summary>
         /// <value>Token value (received in initial MarketChangeMessage) that should be passed to resume a subscription</value>
         [DataMember(Name = "initialClk", EmitDefaultValue = false)]
-        public string InitialClk { get; set; }
+        public string InitialClk { get; set; } = InitialClk;
 
         /// <summary>
         ///     Gets or Sets MarketDataFilter
         /// </summary>
         [DataMember(Name = "marketDataFilter", EmitDefaultValue = false)]
-        public MarketDataFilter MarketDataFilter { get; set; }
+        public MarketDataFilter MarketDataFilter { get; set; } = MarketDataFilter;
 
         /// <summary>
         ///     Gets or Sets MarketFilter
         /// </summary>
         [DataMember(Name = "marketFilter", EmitDefaultValue = false)]
-        public MarketFilter MarketFilter { get; set; }
+        public MarketFilter MarketFilter { get; set; } = MarketFilter;
 
         /// <summary>
         ///     The operation type
         /// </summary>
         /// <value>The operation type</value>
         [DataMember(Name = "op", EmitDefaultValue = false)]
-        public new string Op { get; set; }
+        public new string Op { get; set; } = Op;
 
         /// <summary>
         ///     Segmentation Enabled - allow the server to send large sets of data in segments, instead of a single block
         /// </summary>
         /// <value>Segmentation Enabled - allow the server to send large sets of data in segments, instead of a single block</value>
         [DataMember(Name = "segmentationEnabled", EmitDefaultValue = false)]
-        public bool? SegmentationEnabled { get; set; }
+        public bool? SegmentationEnabled { get; set; } = SegmentationEnabled;
 
         /// <summary>
         ///     Returns true if objects are equal

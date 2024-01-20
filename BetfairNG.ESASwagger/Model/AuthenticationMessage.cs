@@ -7,50 +7,43 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="AuthenticationMessage" /> class.
+    ///     Initializes a new instance of the <see cref="AuthenticationMessage" />class.
+    /// </remarks>
+    /// <param name="Op">The operation type.</param>
+    /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
+    /// <param name="Session">Session.</param>
+    /// <param name="AppKey">AppKey.</param>
     [DataContract]
-    public class AuthenticationMessage : RequestMessage, IEquatable<AuthenticationMessage>
+    public class AuthenticationMessage(string Op = null, int? Id = null, string Session = null, string AppKey = null) : RequestMessage, IEquatable<AuthenticationMessage>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="AuthenticationMessage" /> class.
-        ///     Initializes a new instance of the <see cref="AuthenticationMessage" />class.
-        /// </summary>
-        /// <param name="Op">The operation type.</param>
-        /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
-        /// <param name="Session">Session.</param>
-        /// <param name="AppKey">AppKey.</param>
-        public AuthenticationMessage(string Op = null, int? Id = null, string Session = null, string AppKey = null)
-        {
-            this.Op = Op;
-            this.Id = Id;
-            this.Session = Session;
-            this.AppKey = AppKey;
-        }
 
         /// <summary>
         ///     Gets or Sets AppKey
         /// </summary>
         [DataMember(Name = "appKey", EmitDefaultValue = false)]
-        public string AppKey { get; set; }
+        public string AppKey { get; set; } = AppKey;
 
         /// <summary>
         ///     Client generated unique id to link request with response (like json rpc)
         /// </summary>
         /// <value>Client generated unique id to link request with response (like json rpc)</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public new int? Id { get; set; }
+        public new int? Id { get; set; } = Id;
 
         /// <summary>
         ///     The operation type
         /// </summary>
         /// <value>The operation type</value>
         [DataMember(Name = "op", EmitDefaultValue = false)]
-        public new string Op { get; set; }
+        public new string Op { get; set; } = Op;
 
         /// <summary>
         ///     Gets or Sets Session
         /// </summary>
         [DataMember(Name = "session", EmitDefaultValue = false)]
-        public string Session { get; set; }
+        public string Session { get; set; } = Session;
 
         /// <summary>
         ///     Returns true if objects are equal

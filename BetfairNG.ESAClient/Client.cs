@@ -18,10 +18,24 @@ namespace Betfair.ESAClient
     /// </summary>
     public class Client
     {
+        private readonly string _hostName;
+
+        private readonly int _port;
+
+        /// <summary>
+        /// Handles request / response correlation
+        /// </summary>
+        private readonly RequestResponseProcessor _processor;
+
         /// <summary>
         /// Lock used during retry back-off
         /// </summary>
         private readonly object _retryLock = new();
+
+        /// <summary>
+        /// Handles session creation
+        /// </summary>
+        private readonly AppKeyAndSessionProvider _sessionProvider;
 
         /// <summary>
         /// Lock protecting start / stop flow control
@@ -29,8 +43,6 @@ namespace Betfair.ESAClient
         private readonly object _startStopLock = new();
 
         private TcpClient _client;
-
-        private readonly string _hostName;
 
         /// <summary>
         /// Flag used to protect / signal starting.
@@ -52,20 +64,8 @@ namespace Betfair.ESAClient
         /// </summary>
         private Timer _keepAliveTimer;
 
-        private readonly int _port;
-
-        /// <summary>
-        /// Handles request / response correlation
-        /// </summary>
-        private readonly RequestResponseProcessor _processor;
-
         //socket members
         private StreamReader _reader;
-
-        /// <summary>
-        /// Handles session creation
-        /// </summary>
-        private readonly AppKeyAndSessionProvider _sessionProvider;
 
         private StreamWriter _writer;
 
@@ -399,7 +399,7 @@ namespace Betfair.ESAClient
             Disconnect();
 
             //pre-fetch the session (as auth will follow)
-            AppKeyAndSession appKeyAndSession = _sessionProvider.GetOrCreateNewSession();
+            _sessionProvider.GetOrCreateNewSession();
 
             //create socket
             Trace.TraceInformation("ESAClient: Opening socket to: {0}:{1}", _hostName, _port);
@@ -500,10 +500,9 @@ namespace Betfair.ESAClient
             Trace.TraceInformation("ESAClient: Processing thread started");
             while (!_isStopping)
             {
-                string line = null;
                 try
                 {
-                    line = _reader.ReadLine();
+                    string line = _reader.ReadLine();
                     if (line == null)
                     {
                         throw new IOException("Socket closed - EOF");

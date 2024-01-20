@@ -10,7 +10,7 @@ namespace Betfair.ESAClient.Cache
         /// <summary>
         /// Dictionary of level to LevelPriceSize
         /// </summary>
-        private readonly SortedDictionary<int, LevelPriceSize> _levelToPriceSize = new();
+        private readonly SortedDictionary<int, LevelPriceSize> _levelToPriceSize = [];
 
         private IList<LevelPriceSize> _snap = LevelPriceSize.EmptyList;
 

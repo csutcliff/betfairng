@@ -9,24 +9,20 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="OrderFilter" /> class.
+    ///     Initializes a new instance of the <see cref="OrderFilter" />class.
+    /// </remarks>
+    /// <param name="AccountIds">AccountIds.</param>
     [DataContract]
-    public class OrderFilter : IEquatable<OrderFilter>
+    public class OrderFilter(List<long?> AccountIds = null) : IEquatable<OrderFilter>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="OrderFilter" /> class.
-        ///     Initializes a new instance of the <see cref="OrderFilter" />class.
-        /// </summary>
-        /// <param name="AccountIds">AccountIds.</param>
-        public OrderFilter(List<long?> AccountIds = null)
-        {
-            this.AccountIds = AccountIds;
-        }
 
         /// <summary>
         ///     Gets or Sets AccountIds
         /// </summary>
         [DataMember(Name = "accountIds", EmitDefaultValue = false)]
-        public List<long?> AccountIds { get; set; }
+        public List<long?> AccountIds { get; set; } = AccountIds;
 
         /// <summary>
         ///     Returns true if objects are equal

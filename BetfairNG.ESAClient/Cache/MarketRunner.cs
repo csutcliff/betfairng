@@ -5,11 +5,8 @@ namespace Betfair.ESAClient.Cache
     /// <summary>
     /// Represents a market runner within a market
     /// </summary>
-    public class MarketRunner
+    public class MarketRunner(Market market, RunnerId runnerId)
     {
-        private readonly Market _market;
-        private readonly RunnerId _runnerId;
-
         private readonly PriceSizeLadder _atbPrices = PriceSizeLadder.NewBack();
 
         private readonly PriceSizeLadder _atlPrices = PriceSizeLadder.NewLay();
@@ -23,6 +20,16 @@ namespace Betfair.ESAClient.Cache
 
         private readonly LevelPriceSizeLadder _bdatlPrices = new();
 
+        private readonly Market _market = market;
+
+        private readonly RunnerId _runnerId = runnerId;
+
+        private readonly PriceSizeLadder _spbPrices = PriceSizeLadder.NewBack();
+
+        private readonly PriceSizeLadder _splPrices = PriceSizeLadder.NewLay();
+
+        private readonly PriceSizeLadder _trdPrices = PriceSizeLadder.NewLay();
+
         private double _ltp;
 
         private RunnerDefinition _runnerDefinition;
@@ -31,21 +38,13 @@ namespace Betfair.ESAClient.Cache
         private MarketRunnerPrices _runnerPrices = MarketRunnerPrices.EMPTY;
 
         private MarketRunnerSnap _snap;
-        private readonly PriceSizeLadder _spbPrices = PriceSizeLadder.NewBack();
+
         private double _spf;
-        private readonly PriceSizeLadder _splPrices = PriceSizeLadder.NewLay();
 
         // special prices
         private double _spn;
 
-        private readonly PriceSizeLadder _trdPrices = PriceSizeLadder.NewLay();
         private double _tv;
-
-        public MarketRunner(Market market, RunnerId runnerId)
-        {
-            _market = market;
-            _runnerId = runnerId;
-        }
 
         public RunnerId RunnerId
         {
@@ -62,15 +61,12 @@ namespace Betfair.ESAClient.Cache
         {
             get
             {
-                if (_snap == null)
+                _snap ??= new MarketRunnerSnap()
                 {
-                    _snap = new MarketRunnerSnap()
-                    {
-                        RunnerId = RunnerId,
-                        Definition = _runnerDefinition,
-                        Prices = _runnerPrices
-                    };
-                }
+                    RunnerId = RunnerId,
+                    Definition = _runnerDefinition,
+                    Prices = _runnerPrices
+                };
                 return _snap;
             }
         }

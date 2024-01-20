@@ -7,43 +7,37 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="ConnectionMessage" /> class.
+    ///     Initializes a new instance of the <see cref="ConnectionMessage" />class.
+    /// </remarks>
+    /// <param name="Op">The operation type.</param>
+    /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
+    /// <param name="ConnectionId">The connection id.</param>
     [DataContract]
-    public class ConnectionMessage : ResponseMessage, IEquatable<ConnectionMessage>
+    public class ConnectionMessage(string Op = null, int? Id = null, string ConnectionId = null) : ResponseMessage, IEquatable<ConnectionMessage>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="ConnectionMessage" /> class.
-        ///     Initializes a new instance of the <see cref="ConnectionMessage" />class.
-        /// </summary>
-        /// <param name="Op">The operation type.</param>
-        /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
-        /// <param name="ConnectionId">The connection id.</param>
-        public ConnectionMessage(string Op = null, int? Id = null, string ConnectionId = null)
-        {
-            this.Op = Op;
-            this.Id = Id;
-            this.ConnectionId = ConnectionId;
-        }
 
         /// <summary>
         ///     The connection id
         /// </summary>
         /// <value>The connection id</value>
         [DataMember(Name = "connectionId", EmitDefaultValue = false)]
-        public string ConnectionId { get; set; }
+        public string ConnectionId { get; set; } = ConnectionId;
 
         /// <summary>
         ///     Client generated unique id to link request with response (like json rpc)
         /// </summary>
         /// <value>Client generated unique id to link request with response (like json rpc)</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public new int? Id { get; set; }
+        public new int? Id { get; set; } = Id;
 
         /// <summary>
         ///     The operation type
         /// </summary>
         /// <value>The operation type</value>
         [DataMember(Name = "op", EmitDefaultValue = false)]
-        public new string Op { get; set; }
+        public new string Op { get; set; } = Op;
 
         /// <summary>
         ///     Returns true if objects are equal

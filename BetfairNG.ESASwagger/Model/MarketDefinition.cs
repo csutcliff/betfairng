@@ -10,103 +10,71 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="MarketDefinition" /> class.
+    ///     Initializes a new instance of the <see cref="MarketDefinition" />class.
+    /// </remarks>
+    /// <param name="Venue">Venue.</param>
+    /// <param name="SettledTime">SettledTime.</param>
+    /// <param name="Timezone">Timezone.</param>
+    /// <param name="EachWayDivisor">EachWayDivisor.</param>
+    /// <param name="Regulators">The market regulators..</param>
+    /// <param name="MarketType">MarketType.</param>
+    /// <param name="MarketBaseRate">MarketBaseRate.</param>
+    /// <param name="NumberOfWinners">NumberOfWinners.</param>
+    /// <param name="CountryCode">CountryCode.</param>
+    /// <param name="InPlay">InPlay.</param>
+    /// <param name="BetDelay">BetDelay.</param>
+    /// <param name="BspMarket">BspMarket.</param>
+    /// <param name="BettingType">BettingType.</param>
+    /// <param name="NumberOfActiveRunners">NumberOfActiveRunners.</param>
+    /// <param name="EventId">EventId.</param>
+    /// <param name="CrossMatching">CrossMatching.</param>
+    /// <param name="RunnersVoidable">RunnersVoidable.</param>
+    /// <param name="TurnInPlayEnabled">TurnInPlayEnabled.</param>
+    /// <param name="SuspendTime">SuspendTime.</param>
+    /// <param name="DiscountAllowed">DiscountAllowed.</param>
+    /// <param name="PersistenceEnabled">PersistenceEnabled.</param>
+    /// <param name="Runners">Runners.</param>
+    /// <param name="Version">Version.</param>
+    /// <param name="EventTypeId">The Event Type the market is contained within..</param>
+    /// <param name="Complete">Complete.</param>
+    /// <param name="OpenDate">OpenDate.</param>
+    /// <param name="MarketTime">MarketTime.</param>
+    /// <param name="BspReconciled">BspReconciled.</param>
+    /// <param name="Status">Status.</param>
     [DataContract]
-    public class MarketDefinition : IEquatable<MarketDefinition>
+    public class MarketDefinition(
+        string Venue = null,
+        DateTime? SettledTime = null,
+        string Timezone = null,
+        double? EachWayDivisor = null,
+        List<string> Regulators = null,
+        string MarketType = null,
+        double? MarketBaseRate = null,
+        int? NumberOfWinners = null,
+        string CountryCode = null,
+        bool? InPlay = null,
+        int? BetDelay = null,
+        bool? BspMarket = null,
+MarketDefinition.BettingTypeEnum? BettingType = null,
+        int? NumberOfActiveRunners = null,
+        string EventId = null,
+        bool? CrossMatching = null,
+        bool? RunnersVoidable = null,
+        bool? TurnInPlayEnabled = null,
+        DateTime? SuspendTime = null,
+        bool? DiscountAllowed = null,
+        bool? PersistenceEnabled = null,
+        List<RunnerDefinition> Runners = null,
+        long? Version = null,
+        string EventTypeId = null,
+        bool? Complete = null,
+        DateTime? OpenDate = null,
+        DateTime? MarketTime = null,
+        bool? BspReconciled = null,
+MarketDefinition.StatusEnum? Status = null) : IEquatable<MarketDefinition>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="MarketDefinition" /> class.
-        ///     Initializes a new instance of the <see cref="MarketDefinition" />class.
-        /// </summary>
-        /// <param name="Venue">Venue.</param>
-        /// <param name="SettledTime">SettledTime.</param>
-        /// <param name="Timezone">Timezone.</param>
-        /// <param name="EachWayDivisor">EachWayDivisor.</param>
-        /// <param name="Regulators">The market regulators..</param>
-        /// <param name="MarketType">MarketType.</param>
-        /// <param name="MarketBaseRate">MarketBaseRate.</param>
-        /// <param name="NumberOfWinners">NumberOfWinners.</param>
-        /// <param name="CountryCode">CountryCode.</param>
-        /// <param name="InPlay">InPlay.</param>
-        /// <param name="BetDelay">BetDelay.</param>
-        /// <param name="BspMarket">BspMarket.</param>
-        /// <param name="BettingType">BettingType.</param>
-        /// <param name="NumberOfActiveRunners">NumberOfActiveRunners.</param>
-        /// <param name="EventId">EventId.</param>
-        /// <param name="CrossMatching">CrossMatching.</param>
-        /// <param name="RunnersVoidable">RunnersVoidable.</param>
-        /// <param name="TurnInPlayEnabled">TurnInPlayEnabled.</param>
-        /// <param name="SuspendTime">SuspendTime.</param>
-        /// <param name="DiscountAllowed">DiscountAllowed.</param>
-        /// <param name="PersistenceEnabled">PersistenceEnabled.</param>
-        /// <param name="Runners">Runners.</param>
-        /// <param name="Version">Version.</param>
-        /// <param name="EventTypeId">The Event Type the market is contained within..</param>
-        /// <param name="Complete">Complete.</param>
-        /// <param name="OpenDate">OpenDate.</param>
-        /// <param name="MarketTime">MarketTime.</param>
-        /// <param name="BspReconciled">BspReconciled.</param>
-        /// <param name="Status">Status.</param>
-        public MarketDefinition(
-            string Venue = null,
-            DateTime? SettledTime = null,
-            string Timezone = null,
-            double? EachWayDivisor = null,
-            List<string> Regulators = null,
-            string MarketType = null,
-            double? MarketBaseRate = null,
-            int? NumberOfWinners = null,
-            string CountryCode = null,
-            bool? InPlay = null,
-            int? BetDelay = null,
-            bool? BspMarket = null,
-            BettingTypeEnum? BettingType = null,
-            int? NumberOfActiveRunners = null,
-            string EventId = null,
-            bool? CrossMatching = null,
-            bool? RunnersVoidable = null,
-            bool? TurnInPlayEnabled = null,
-            DateTime? SuspendTime = null,
-            bool? DiscountAllowed = null,
-            bool? PersistenceEnabled = null,
-            List<RunnerDefinition> Runners = null,
-            long? Version = null,
-            string EventTypeId = null,
-            bool? Complete = null,
-            DateTime? OpenDate = null,
-            DateTime? MarketTime = null,
-            bool? BspReconciled = null,
-            StatusEnum? Status = null)
-        {
-            this.Venue = Venue;
-            this.SettledTime = SettledTime;
-            this.Timezone = Timezone;
-            this.EachWayDivisor = EachWayDivisor;
-            this.Regulators = Regulators;
-            this.MarketType = MarketType;
-            this.MarketBaseRate = MarketBaseRate;
-            this.NumberOfWinners = NumberOfWinners;
-            this.CountryCode = CountryCode;
-            this.InPlay = InPlay;
-            this.BetDelay = BetDelay;
-            this.BspMarket = BspMarket;
-            this.BettingType = BettingType;
-            this.NumberOfActiveRunners = NumberOfActiveRunners;
-            this.EventId = EventId;
-            this.CrossMatching = CrossMatching;
-            this.RunnersVoidable = RunnersVoidable;
-            this.TurnInPlayEnabled = TurnInPlayEnabled;
-            this.SuspendTime = SuspendTime;
-            this.DiscountAllowed = DiscountAllowed;
-            this.PersistenceEnabled = PersistenceEnabled;
-            this.Runners = Runners;
-            this.Version = Version;
-            this.EventTypeId = EventTypeId;
-            this.Complete = Complete;
-            this.OpenDate = OpenDate;
-            this.MarketTime = MarketTime;
-            this.BspReconciled = BspReconciled;
-            this.Status = Status;
-        }
 
         /// <summary>
         ///     Gets or Sets BettingType
@@ -153,177 +121,177 @@ namespace Betfair.ESASwagger.Model
         ///     Gets or Sets BetDelay
         /// </summary>
         [DataMember(Name = "betDelay", EmitDefaultValue = false)]
-        public int? BetDelay { get; set; }
+        public int? BetDelay { get; set; } = BetDelay;
 
         /// <summary>
         ///     Gets or Sets BettingType
         /// </summary>
         [DataMember(Name = "bettingType", EmitDefaultValue = false)]
-        public BettingTypeEnum? BettingType { get; set; }
+        public BettingTypeEnum? BettingType { get; set; } = BettingType;
 
         /// <summary>
         ///     Gets or Sets BspMarket
         /// </summary>
         [DataMember(Name = "bspMarket", EmitDefaultValue = false)]
-        public bool? BspMarket { get; set; }
+        public bool? BspMarket { get; set; } = BspMarket;
 
         /// <summary>
         ///     Gets or Sets BspReconciled
         /// </summary>
         [DataMember(Name = "bspReconciled", EmitDefaultValue = false)]
-        public bool? BspReconciled { get; set; }
+        public bool? BspReconciled { get; set; } = BspReconciled;
 
         /// <summary>
         ///     Gets or Sets Complete
         /// </summary>
         [DataMember(Name = "complete", EmitDefaultValue = false)]
-        public bool? Complete { get; set; }
+        public bool? Complete { get; set; } = Complete;
 
         /// <summary>
         ///     Gets or Sets CountryCode
         /// </summary>
         [DataMember(Name = "countryCode", EmitDefaultValue = false)]
-        public string CountryCode { get; set; }
+        public string CountryCode { get; set; } = CountryCode;
 
         /// <summary>
         ///     Gets or Sets CrossMatching
         /// </summary>
         [DataMember(Name = "crossMatching", EmitDefaultValue = false)]
-        public bool? CrossMatching { get; set; }
+        public bool? CrossMatching { get; set; } = CrossMatching;
 
         /// <summary>
         ///     Gets or Sets DiscountAllowed
         /// </summary>
         [DataMember(Name = "discountAllowed", EmitDefaultValue = false)]
-        public bool? DiscountAllowed { get; set; }
+        public bool? DiscountAllowed { get; set; } = DiscountAllowed;
 
         /// <summary>
         ///     Gets or Sets EachWayDivisor
         /// </summary>
         [DataMember(Name = "eachWayDivisor", EmitDefaultValue = false)]
-        public double? EachWayDivisor { get; set; }
+        public double? EachWayDivisor { get; set; } = EachWayDivisor;
 
         /// <summary>
         ///     Gets or Sets EventId
         /// </summary>
         [DataMember(Name = "eventId", EmitDefaultValue = false)]
-        public string EventId { get; set; }
+        public string EventId { get; set; } = EventId;
 
         /// <summary>
         ///     The Event Type the market is contained within.
         /// </summary>
         /// <value>The Event Type the market is contained within.</value>
         [DataMember(Name = "eventTypeId", EmitDefaultValue = false)]
-        public string EventTypeId { get; set; }
+        public string EventTypeId { get; set; } = EventTypeId;
 
         /// <summary>
         ///     Gets or Sets InPlay
         /// </summary>
         [DataMember(Name = "inPlay", EmitDefaultValue = false)]
-        public bool? InPlay { get; set; }
+        public bool? InPlay { get; set; } = InPlay;
 
         /// <summary>
         ///     Gets or Sets MarketBaseRate
         /// </summary>
         [DataMember(Name = "marketBaseRate", EmitDefaultValue = false)]
-        public double? MarketBaseRate { get; set; }
+        public double? MarketBaseRate { get; set; } = MarketBaseRate;
 
         /// <summary>
         ///     Gets or Sets MarketTime
         /// </summary>
         [DataMember(Name = "marketTime", EmitDefaultValue = false)]
-        public DateTime? MarketTime { get; set; }
+        public DateTime? MarketTime { get; set; } = MarketTime;
 
         /// <summary>
         ///     Gets or Sets MarketType
         /// </summary>
         [DataMember(Name = "marketType", EmitDefaultValue = false)]
-        public string MarketType { get; set; }
+        public string MarketType { get; set; } = MarketType;
 
         /// <summary>
         ///     Gets or Sets NumberOfActiveRunners
         /// </summary>
         [DataMember(Name = "numberOfActiveRunners", EmitDefaultValue = false)]
-        public int? NumberOfActiveRunners { get; set; }
+        public int? NumberOfActiveRunners { get; set; } = NumberOfActiveRunners;
 
         /// <summary>
         ///     Gets or Sets NumberOfWinners
         /// </summary>
         [DataMember(Name = "numberOfWinners", EmitDefaultValue = false)]
-        public int? NumberOfWinners { get; set; }
+        public int? NumberOfWinners { get; set; } = NumberOfWinners;
 
         /// <summary>
         ///     Gets or Sets OpenDate
         /// </summary>
         [DataMember(Name = "openDate", EmitDefaultValue = false)]
-        public DateTime? OpenDate { get; set; }
+        public DateTime? OpenDate { get; set; } = OpenDate;
 
         /// <summary>
         ///     Gets or Sets PersistenceEnabled
         /// </summary>
         [DataMember(Name = "persistenceEnabled", EmitDefaultValue = false)]
-        public bool? PersistenceEnabled { get; set; }
+        public bool? PersistenceEnabled { get; set; } = PersistenceEnabled;
 
         /// <summary>
         ///     The market regulators.
         /// </summary>
         /// <value>The market regulators.</value>
         [DataMember(Name = "regulators", EmitDefaultValue = false)]
-        public List<string> Regulators { get; set; }
+        public List<string> Regulators { get; set; } = Regulators;
 
         /// <summary>
         ///     Gets or Sets Runners
         /// </summary>
         [DataMember(Name = "runners", EmitDefaultValue = false)]
-        public List<RunnerDefinition> Runners { get; set; }
+        public List<RunnerDefinition> Runners { get; set; } = Runners;
 
         /// <summary>
         ///     Gets or Sets RunnersVoidable
         /// </summary>
         [DataMember(Name = "runnersVoidable", EmitDefaultValue = false)]
-        public bool? RunnersVoidable { get; set; }
+        public bool? RunnersVoidable { get; set; } = RunnersVoidable;
 
         /// <summary>
         ///     Gets or Sets SettledTime
         /// </summary>
         [DataMember(Name = "settledTime", EmitDefaultValue = false)]
-        public DateTime? SettledTime { get; set; }
+        public DateTime? SettledTime { get; set; } = SettledTime;
 
         /// <summary>
         ///     Gets or Sets Status
         /// </summary>
         [DataMember(Name = "status", EmitDefaultValue = false)]
-        public StatusEnum? Status { get; set; }
+        public StatusEnum? Status { get; set; } = Status;
 
         /// <summary>
         ///     Gets or Sets SuspendTime
         /// </summary>
         [DataMember(Name = "suspendTime", EmitDefaultValue = false)]
-        public DateTime? SuspendTime { get; set; }
+        public DateTime? SuspendTime { get; set; } = SuspendTime;
 
         /// <summary>
         ///     Gets or Sets Timezone
         /// </summary>
         [DataMember(Name = "timezone", EmitDefaultValue = false)]
-        public string Timezone { get; set; }
+        public string Timezone { get; set; } = Timezone;
 
         /// <summary>
         ///     Gets or Sets TurnInPlayEnabled
         /// </summary>
         [DataMember(Name = "turnInPlayEnabled", EmitDefaultValue = false)]
-        public bool? TurnInPlayEnabled { get; set; }
+        public bool? TurnInPlayEnabled { get; set; } = TurnInPlayEnabled;
 
         /// <summary>
         ///     Gets or Sets Venue
         /// </summary>
         [DataMember(Name = "venue", EmitDefaultValue = false)]
-        public string Venue { get; set; }
+        public string Venue { get; set; } = Venue;
 
         /// <summary>
         ///     Gets or Sets Version
         /// </summary>
         [DataMember(Name = "version", EmitDefaultValue = false)]
-        public long? Version { get; set; }
+        public long? Version { get; set; } = Version;
 
         /// <summary>
         ///     Returns true if objects are equal

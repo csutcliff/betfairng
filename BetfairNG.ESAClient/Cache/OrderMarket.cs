@@ -7,18 +7,12 @@ namespace Betfair.ESAClient.Cache
     /// <summary>
     /// The cached state of the market
     /// </summary>
-    public class OrderMarket
+    public class OrderMarket(OrderCache orderCache, string marketId)
     {
-        private readonly string _marketId;
-        private readonly Dictionary<RunnerId, OrderMarketRunner> _marketRunners = new();
-        private readonly OrderCache _orderCache;
+        private readonly string _marketId = marketId;
+        private readonly Dictionary<RunnerId, OrderMarketRunner> _marketRunners = [];
+        private readonly OrderCache _orderCache = orderCache;
         private OrderMarketSnap _snap;
-
-        public OrderMarket(OrderCache orderCache, string marketId)
-        {
-            _orderCache = orderCache;
-            _marketId = marketId;
-        }
 
         public bool IsClosed { get; private set; }
 

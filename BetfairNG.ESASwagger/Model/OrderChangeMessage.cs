@@ -10,49 +10,36 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="OrderChangeMessage" /> class.
+    ///     Initializes a new instance of the <see cref="OrderChangeMessage" />class.
+    /// </remarks>
+    /// <param name="Op">The operation type.</param>
+    /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
+    /// <param name="Ct">Change Type - set to indicate the type of change - if null this is a delta).</param>
+    /// <param name="Clk">Token value (non-null) should be stored and passed in a MarketSubscriptionMessage to resume subscription (in case of disconnect).</param>
+    /// <param name="HeartbeatMs">Heartbeat Milliseconds - the heartbeat rate (may differ from requested: bounds are 500 to 30000).</param>
+    /// <param name="Pt">Publish Time (in millis since epoch) that the changes were generated.</param>
+    /// <param name="Oc">OrderMarketChanges - the modifications to account&#39;s orders (will be null on a heartbeat.</param>
+    /// <param name="InitialClk">Token value (non-null) should be stored and passed in a MarketSubscriptionMessage to resume subscription (in case of disconnect).</param>
+    /// <param name="ConflateMs">Conflate Milliseconds - the conflation rate (may differ from that requested if subscription is delayed).</param>
+    /// <param name="SegmentType">
+    ///     Segment Type - if the change is split into multiple segments, this denotes the beginning and end of a change, and segments in between. Will be null if
+    ///     data is not segmented.
+    /// </param>
     [DataContract]
-    public class OrderChangeMessage : ResponseMessage, IEquatable<OrderChangeMessage>
+    public class OrderChangeMessage(
+        string Op = null,
+        int? Id = null,
+OrderChangeMessage.CtEnum? Ct = null,
+        string Clk = null,
+        long? HeartbeatMs = null,
+        long? Pt = null,
+        List<OrderMarketChange> Oc = null,
+        string InitialClk = null,
+        long? ConflateMs = null,
+OrderChangeMessage.SegmentTypeEnum? SegmentType = null) : ResponseMessage, IEquatable<OrderChangeMessage>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="OrderChangeMessage" /> class.
-        ///     Initializes a new instance of the <see cref="OrderChangeMessage" />class.
-        /// </summary>
-        /// <param name="Op">The operation type.</param>
-        /// <param name="Id">Client generated unique id to link request with response (like json rpc).</param>
-        /// <param name="Ct">Change Type - set to indicate the type of change - if null this is a delta).</param>
-        /// <param name="Clk">Token value (non-null) should be stored and passed in a MarketSubscriptionMessage to resume subscription (in case of disconnect).</param>
-        /// <param name="HeartbeatMs">Heartbeat Milliseconds - the heartbeat rate (may differ from requested: bounds are 500 to 30000).</param>
-        /// <param name="Pt">Publish Time (in millis since epoch) that the changes were generated.</param>
-        /// <param name="Oc">OrderMarketChanges - the modifications to account&#39;s orders (will be null on a heartbeat.</param>
-        /// <param name="InitialClk">Token value (non-null) should be stored and passed in a MarketSubscriptionMessage to resume subscription (in case of disconnect).</param>
-        /// <param name="ConflateMs">Conflate Milliseconds - the conflation rate (may differ from that requested if subscription is delayed).</param>
-        /// <param name="SegmentType">
-        ///     Segment Type - if the change is split into multiple segments, this denotes the beginning and end of a change, and segments in between. Will be null if
-        ///     data is not segmented.
-        /// </param>
-        public OrderChangeMessage(
-            string Op = null,
-            int? Id = null,
-            CtEnum? Ct = null,
-            string Clk = null,
-            long? HeartbeatMs = null,
-            long? Pt = null,
-            List<OrderMarketChange> Oc = null,
-            string InitialClk = null,
-            long? ConflateMs = null,
-            SegmentTypeEnum? SegmentType = null)
-        {
-            this.Op = Op;
-            this.Id = Id;
-            this.Ct = Ct;
-            this.Clk = Clk;
-            this.HeartbeatMs = HeartbeatMs;
-            this.Pt = Pt;
-            this.Oc = Oc;
-            this.InitialClk = InitialClk;
-            this.ConflateMs = ConflateMs;
-            this.SegmentType = SegmentType;
-        }
 
         /// <summary>
         ///     Change Type - set to indicate the type of change - if null this is a delta)
@@ -93,70 +80,70 @@ namespace Betfair.ESASwagger.Model
         /// </summary>
         /// <value>Token value (non-null) should be stored and passed in a MarketSubscriptionMessage to resume subscription (in case of disconnect)</value>
         [DataMember(Name = "clk", EmitDefaultValue = false)]
-        public string Clk { get; set; }
+        public string Clk { get; set; } = Clk;
 
         /// <summary>
         ///     Conflate Milliseconds - the conflation rate (may differ from that requested if subscription is delayed)
         /// </summary>
         /// <value>Conflate Milliseconds - the conflation rate (may differ from that requested if subscription is delayed)</value>
         [DataMember(Name = "conflateMs", EmitDefaultValue = false)]
-        public long? ConflateMs { get; set; }
+        public long? ConflateMs { get; set; } = ConflateMs;
 
         /// <summary>
         ///     Change Type - set to indicate the type of change - if null this is a delta)
         /// </summary>
         /// <value>Change Type - set to indicate the type of change - if null this is a delta)</value>
         [DataMember(Name = "ct", EmitDefaultValue = false)]
-        public CtEnum? Ct { get; set; }
+        public CtEnum? Ct { get; set; } = Ct;
 
         /// <summary>
         ///     Heartbeat Milliseconds - the heartbeat rate (may differ from requested: bounds are 500 to 30000)
         /// </summary>
         /// <value>Heartbeat Milliseconds - the heartbeat rate (may differ from requested: bounds are 500 to 30000)</value>
         [DataMember(Name = "heartbeatMs", EmitDefaultValue = false)]
-        public long? HeartbeatMs { get; set; }
+        public long? HeartbeatMs { get; set; } = HeartbeatMs;
 
         /// <summary>
         ///     Client generated unique id to link request with response (like json rpc)
         /// </summary>
         /// <value>Client generated unique id to link request with response (like json rpc)</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public new int? Id { get; set; }
+        public new int? Id { get; set; } = Id;
 
         /// <summary>
         ///     Token value (non-null) should be stored and passed in a MarketSubscriptionMessage to resume subscription (in case of disconnect)
         /// </summary>
         /// <value>Token value (non-null) should be stored and passed in a MarketSubscriptionMessage to resume subscription (in case of disconnect)</value>
         [DataMember(Name = "initialClk", EmitDefaultValue = false)]
-        public string InitialClk { get; set; }
+        public string InitialClk { get; set; } = InitialClk;
 
         /// <summary>
         ///     OrderMarketChanges - the modifications to account&#39;s orders (will be null on a heartbeat
         /// </summary>
         /// <value>OrderMarketChanges - the modifications to account&#39;s orders (will be null on a heartbeat</value>
         [DataMember(Name = "oc", EmitDefaultValue = false)]
-        public List<OrderMarketChange> Oc { get; set; }
+        public List<OrderMarketChange> Oc { get; set; } = Oc;
 
         /// <summary>
         ///     The operation type
         /// </summary>
         /// <value>The operation type</value>
         [DataMember(Name = "op", EmitDefaultValue = false)]
-        public new string Op { get; set; }
+        public new string Op { get; set; } = Op;
 
         /// <summary>
         ///     Publish Time (in millis since epoch) that the changes were generated
         /// </summary>
         /// <value>Publish Time (in millis since epoch) that the changes were generated</value>
         [DataMember(Name = "pt", EmitDefaultValue = false)]
-        public long? Pt { get; set; }
+        public long? Pt { get; set; } = Pt;
 
         /// <summary>
         ///     Segment Type - if the change is split into multiple segments, this denotes the beginning and end of a change, and segments in between. Will be null if data is not segmented
         /// </summary>
         /// <value>Segment Type - if the change is split into multiple segments, this denotes the beginning and end of a change, and segments in between. Will be null if data is not segmented</value>
         [DataMember(Name = "segmentType", EmitDefaultValue = false)]
-        public SegmentTypeEnum? SegmentType { get; set; }
+        public SegmentTypeEnum? SegmentType { get; set; } = SegmentType;
 
         /// <summary>
         ///     Returns true if objects are equal

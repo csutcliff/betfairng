@@ -8,73 +8,51 @@ namespace Betfair.ESASwagger.Model
 {
     /// <summary>
     /// </summary>
+    /// <remarks>
+    ///     Initializes a new instance of the <see cref="Order" /> class.
+    ///     Initializes a new instance of the <see cref="Order" />class.
+    /// </remarks>
+    /// <param name="Side">Side - the side of the order.</param>
+    /// <param name="Sv">Size Voided - the amount of the order that has been voided.</param>
+    /// <param name="Pt">Persistence Type - whether the order will persist at in play or not (L = LAPSE, P = PERSIST, MOC = Market On Close).</param>
+    /// <param name="Ot">Order Type - the type of the order (L = LIMIT, MOC = MARKET_ON_CLOSE, LOC = LIMIT_ON_CLOSE).</param>
+    /// <param name="P">Price - the original placed price of the order.</param>
+    /// <param name="Sc">Size Cancelled - the amount of the order that has been cancelled.</param>
+    /// <param name="Rc">Regulator Code - the regulator of the order.</param>
+    /// <param name="S">Size - the original placed size of the order.</param>
+    /// <param name="Pd">Placed Date - the date the order was placed.</param>
+    /// <param name="Rac">Regulator Auth Code - the auth code returned by the regulator.</param>
+    /// <param name="Md">Matched Date - the date the order was matched (null if the order is not matched).</param>
+    /// <param name="Sl">Size Lapsed - the amount of the order that has been lapsed.</param>
+    /// <param name="Avp">Average Price Matched - the average price the order was matched at (null if the order is not matched.</param>
+    /// <param name="Sm">Size Matched - the amount of the order that has been matched.</param>
+    /// <param name="Id">Bet Id - the id of the order.</param>
+    /// <param name="Bsp">BSP Liability - the BSP liability of the order (null if the order is not a BSP order).</param>
+    /// <param name="Status">Status - the status of the order (E = EXECUTABLE, EC = EXECUTION_COMPLETE).</param>
+    /// <param name="Sr">Size Remaining - the amount of the order that is remaining unmatched.</param>
+    /// <param name="Cd">Cancelled Date - the date the order was cancelled (null if the order is not cancelled).</param>
     [DataContract]
-    public class Order : IEquatable<Order>
+    public class Order(
+Order.SideEnum? Side = null,
+        double? Sv = null,
+Order.PtEnum? Pt = null,
+Order.OtEnum? Ot = null,
+        double? P = null,
+        double? Sc = null,
+        string Rc = null,
+        double? S = null,
+        long? Pd = null,
+        string Rac = null,
+        long? Md = null,
+        double? Sl = null,
+        double? Avp = null,
+        double? Sm = null,
+        string Id = null,
+        double? Bsp = null,
+Order.StatusEnum? Status = null,
+        double? Sr = null,
+        long? Cd = null) : IEquatable<Order>
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Order" /> class.
-        ///     Initializes a new instance of the <see cref="Order" />class.
-        /// </summary>
-        /// <param name="Side">Side - the side of the order.</param>
-        /// <param name="Sv">Size Voided - the amount of the order that has been voided.</param>
-        /// <param name="Pt">Persistence Type - whether the order will persist at in play or not (L = LAPSE, P = PERSIST, MOC = Market On Close).</param>
-        /// <param name="Ot">Order Type - the type of the order (L = LIMIT, MOC = MARKET_ON_CLOSE, LOC = LIMIT_ON_CLOSE).</param>
-        /// <param name="P">Price - the original placed price of the order.</param>
-        /// <param name="Sc">Size Cancelled - the amount of the order that has been cancelled.</param>
-        /// <param name="Rc">Regulator Code - the regulator of the order.</param>
-        /// <param name="S">Size - the original placed size of the order.</param>
-        /// <param name="Pd">Placed Date - the date the order was placed.</param>
-        /// <param name="Rac">Regulator Auth Code - the auth code returned by the regulator.</param>
-        /// <param name="Md">Matched Date - the date the order was matched (null if the order is not matched).</param>
-        /// <param name="Sl">Size Lapsed - the amount of the order that has been lapsed.</param>
-        /// <param name="Avp">Average Price Matched - the average price the order was matched at (null if the order is not matched.</param>
-        /// <param name="Sm">Size Matched - the amount of the order that has been matched.</param>
-        /// <param name="Id">Bet Id - the id of the order.</param>
-        /// <param name="Bsp">BSP Liability - the BSP liability of the order (null if the order is not a BSP order).</param>
-        /// <param name="Status">Status - the status of the order (E = EXECUTABLE, EC = EXECUTION_COMPLETE).</param>
-        /// <param name="Sr">Size Remaining - the amount of the order that is remaining unmatched.</param>
-        /// <param name="Cd">Cancelled Date - the date the order was cancelled (null if the order is not cancelled).</param>
-        public Order(
-            SideEnum? Side = null,
-            double? Sv = null,
-            PtEnum? Pt = null,
-            OtEnum? Ot = null,
-            double? P = null,
-            double? Sc = null,
-            string Rc = null,
-            double? S = null,
-            long? Pd = null,
-            string Rac = null,
-            long? Md = null,
-            double? Sl = null,
-            double? Avp = null,
-            double? Sm = null,
-            string Id = null,
-            double? Bsp = null,
-            StatusEnum? Status = null,
-            double? Sr = null,
-            long? Cd = null)
-        {
-            this.Side = Side;
-            this.Sv = Sv;
-            this.Pt = Pt;
-            this.Ot = Ot;
-            this.P = P;
-            this.Sc = Sc;
-            this.Rc = Rc;
-            this.S = S;
-            this.Pd = Pd;
-            this.Rac = Rac;
-            this.Md = Md;
-            this.Sl = Sl;
-            this.Avp = Avp;
-            this.Sm = Sm;
-            this.Id = Id;
-            this.Bsp = Bsp;
-            this.Status = Status;
-            this.Sr = Sr;
-            this.Cd = Cd;
-        }
 
         /// <summary>
         ///     Order Type - the type of the order (L = LIMIT, MOC = MARKET_ON_CLOSE, LOC = LIMIT_ON_CLOSE)
@@ -143,133 +121,133 @@ namespace Betfair.ESASwagger.Model
         /// </summary>
         /// <value>Average Price Matched - the average price the order was matched at (null if the order is not matched</value>
         [DataMember(Name = "avp", EmitDefaultValue = false)]
-        public double? Avp { get; set; }
+        public double? Avp { get; set; } = Avp;
 
         /// <summary>
         ///     BSP Liability - the BSP liability of the order (null if the order is not a BSP order)
         /// </summary>
         /// <value>BSP Liability - the BSP liability of the order (null if the order is not a BSP order)</value>
         [DataMember(Name = "bsp", EmitDefaultValue = false)]
-        public double? Bsp { get; set; }
+        public double? Bsp { get; set; } = Bsp;
 
         /// <summary>
         ///     Cancelled Date - the date the order was cancelled (null if the order is not cancelled)
         /// </summary>
         /// <value>Cancelled Date - the date the order was cancelled (null if the order is not cancelled)</value>
         [DataMember(Name = "cd", EmitDefaultValue = false)]
-        public long? Cd { get; set; }
+        public long? Cd { get; set; } = Cd;
 
         /// <summary>
         ///     Bet Id - the id of the order
         /// </summary>
         /// <value>Bet Id - the id of the order</value>
         [DataMember(Name = "id", EmitDefaultValue = false)]
-        public string Id { get; set; }
+        public string Id { get; set; } = Id;
 
         /// <summary>
         ///     Matched Date - the date the order was matched (null if the order is not matched)
         /// </summary>
         /// <value>Matched Date - the date the order was matched (null if the order is not matched)</value>
         [DataMember(Name = "md", EmitDefaultValue = false)]
-        public long? Md { get; set; }
+        public long? Md { get; set; } = Md;
 
         /// <summary>
         ///     Order Type - the type of the order (L = LIMIT, MOC = MARKET_ON_CLOSE, LOC = LIMIT_ON_CLOSE)
         /// </summary>
         /// <value>Order Type - the type of the order (L = LIMIT, MOC = MARKET_ON_CLOSE, LOC = LIMIT_ON_CLOSE)</value>
         [DataMember(Name = "ot", EmitDefaultValue = false)]
-        public OtEnum? Ot { get; set; }
+        public OtEnum? Ot { get; set; } = Ot;
 
         /// <summary>
         ///     Price - the original placed price of the order
         /// </summary>
         /// <value>Price - the original placed price of the order</value>
         [DataMember(Name = "p", EmitDefaultValue = false)]
-        public double? P { get; set; }
+        public double? P { get; set; } = P;
 
         /// <summary>
         ///     Placed Date - the date the order was placed
         /// </summary>
         /// <value>Placed Date - the date the order was placed</value>
         [DataMember(Name = "pd", EmitDefaultValue = false)]
-        public long? Pd { get; set; }
+        public long? Pd { get; set; } = Pd;
 
         /// <summary>
         ///     Persistence Type - whether the order will persist at in play or not (L = LAPSE, P = PERSIST, MOC = Market On Close)
         /// </summary>
         /// <value>Persistence Type - whether the order will persist at in play or not (L = LAPSE, P = PERSIST, MOC = Market On Close)</value>
         [DataMember(Name = "pt", EmitDefaultValue = false)]
-        public PtEnum? Pt { get; set; }
+        public PtEnum? Pt { get; set; } = Pt;
 
         /// <summary>
         ///     Regulator Auth Code - the auth code returned by the regulator
         /// </summary>
         /// <value>Regulator Auth Code - the auth code returned by the regulator</value>
         [DataMember(Name = "rac", EmitDefaultValue = false)]
-        public string Rac { get; set; }
+        public string Rac { get; set; } = Rac;
 
         /// <summary>
         ///     Regulator Code - the regulator of the order
         /// </summary>
         /// <value>Regulator Code - the regulator of the order</value>
         [DataMember(Name = "rc", EmitDefaultValue = false)]
-        public string Rc { get; set; }
+        public string Rc { get; set; } = Rc;
 
         /// <summary>
         ///     Size - the original placed size of the order
         /// </summary>
         /// <value>Size - the original placed size of the order</value>
         [DataMember(Name = "s", EmitDefaultValue = false)]
-        public double? S { get; set; }
+        public double? S { get; set; } = S;
 
         /// <summary>
         ///     Size Cancelled - the amount of the order that has been cancelled
         /// </summary>
         /// <value>Size Cancelled - the amount of the order that has been cancelled</value>
         [DataMember(Name = "sc", EmitDefaultValue = false)]
-        public double? Sc { get; set; }
+        public double? Sc { get; set; } = Sc;
 
         /// <summary>
         ///     Side - the side of the order
         /// </summary>
         /// <value>Side - the side of the order</value>
         [DataMember(Name = "side", EmitDefaultValue = false)]
-        public SideEnum? Side { get; set; }
+        public SideEnum? Side { get; set; } = Side;
 
         /// <summary>
         ///     Size Lapsed - the amount of the order that has been lapsed
         /// </summary>
         /// <value>Size Lapsed - the amount of the order that has been lapsed</value>
         [DataMember(Name = "sl", EmitDefaultValue = false)]
-        public double? Sl { get; set; }
+        public double? Sl { get; set; } = Sl;
 
         /// <summary>
         ///     Size Matched - the amount of the order that has been matched
         /// </summary>
         /// <value>Size Matched - the amount of the order that has been matched</value>
         [DataMember(Name = "sm", EmitDefaultValue = false)]
-        public double? Sm { get; set; }
+        public double? Sm { get; set; } = Sm;
 
         /// <summary>
         ///     Size Remaining - the amount of the order that is remaining unmatched
         /// </summary>
         /// <value>Size Remaining - the amount of the order that is remaining unmatched</value>
         [DataMember(Name = "sr", EmitDefaultValue = false)]
-        public double? Sr { get; set; }
+        public double? Sr { get; set; } = Sr;
 
         /// <summary>
         ///     Status - the status of the order (E = EXECUTABLE, EC = EXECUTION_COMPLETE)
         /// </summary>
         /// <value>Status - the status of the order (E = EXECUTABLE, EC = EXECUTION_COMPLETE)</value>
         [DataMember(Name = "status", EmitDefaultValue = false)]
-        public StatusEnum? Status { get; set; }
+        public StatusEnum? Status { get; set; } = Status;
 
         /// <summary>
         ///     Size Voided - the amount of the order that has been voided
         /// </summary>
         /// <value>Size Voided - the amount of the order that has been voided</value>
         [DataMember(Name = "sv", EmitDefaultValue = false)]
-        public double? Sv { get; set; }
+        public double? Sv { get; set; } = Sv;
 
         /// <summary>
         ///     Returns true if objects are equal
