@@ -270,20 +270,21 @@ namespace BetfairNG
 
         public static double AddPip(double price)
         {
-            if (!IsValidPrice(price))
-                throw new ApplicationException("Invalid Price");
-
-            int index = Array.IndexOf<double>(Table, price);
-            return Table[++index];
+            return AddPip(price, 1);
         }
 
         public static double AddPip(double price, int num)
         {
-            if (!IsValidPrice(price))
+            int index = Array.IndexOf<double>(Table, price);
+
+            if (index == -1)
                 throw new ApplicationException("Invalid Price");
 
-            int index = Array.IndexOf<double>(Table, price);
-            return Table[index + num];
+            index += num;
+
+            if (index >= Table.Length)
+                return Table[^1];
+            return Table[index];
         }
 
         public static double ApplySpread(double price, double percentage)
@@ -357,20 +358,21 @@ namespace BetfairNG
 
         public static double SubtractPip(double price)
         {
-            if (!IsValidPrice(price))
-                throw new ApplicationException("Invalid Price");
-
-            int index = Array.IndexOf<double>(Table, price);
-            return Table[--index];
+            return SubtractPip(price, 1);
         }
 
         public static double SubtractPip(double price, int num)
         {
-            if (!IsValidPrice(price))
+            int index = Array.IndexOf(Table, price);
+
+            if (index == -1)
                 throw new ApplicationException("Invalid Price");
 
-            int index = Array.IndexOf<double>(Table, price);
-            return Table[index - num];
+            index -= num;
+
+            if (index < 0)
+                return Table[0];
+            return Table[index];
         }
     }
 }
