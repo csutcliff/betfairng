@@ -2,6 +2,7 @@
 using BetfairNG.Data;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
@@ -231,7 +232,7 @@ namespace BetfairNG
 
     public class PriceHelpers
     {
-        public static readonly double[] Table = new double[]
+        public static readonly ImmutableArray<double> Table = new ImmutableArray<double>()
         {
             1.01, 1.02, 1.03, 1.04, 1.05, 1.06, 1.07, 1.08, 1.09,
             1.1, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.2,
@@ -302,7 +303,7 @@ namespace BetfairNG
 
         public static bool IsValidPrice(double price, out int index)
         {
-            index = Array.BinarySearch(Table, price);
+            index = Table.BinarySearch(price);
 
             if (index < 0)
                 return false;
