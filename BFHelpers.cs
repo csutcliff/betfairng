@@ -275,22 +275,20 @@ namespace BetfairNG
 
         public static double AddPip(double price, int num)
         {
-            int index = Array.IndexOf<double>(Table, price);
+            int index = Array.IndexOf(Table, price);
 
             if (index == -1)
-                throw new ApplicationException("Invalid Price");
+                throw new ApplicationException($"Invalid Price: {price}");
 
             index += num;
 
-            if (index >= Table.Length)
-                return Table[^1];
-            return Table[index];
+            return index >= Table.Length ? Table[^1] : Table[index];
         }
 
         public static double ApplySpread(double price, double percentage)
         {
             if (!IsValidPrice(price))
-                throw new ApplicationException("Invalid Price");
+                throw new ApplicationException($"Invalid Price: {price}");
 
             double adjustedPrice = price * percentage;
 
@@ -366,13 +364,11 @@ namespace BetfairNG
             int index = Array.IndexOf(Table, price);
 
             if (index == -1)
-                throw new ApplicationException("Invalid Price");
+                throw new ApplicationException($"Invalid Price: {price}");
 
             index -= num;
 
-            if (index < 0)
-                return Table[0];
-            return Table[index];
+            return index < 0 ? Table[0] : Table[index];
         }
     }
 }
