@@ -231,7 +231,7 @@ namespace BetfairNG
 
     public class PriceHelpers
     {
-        public static double[] Table = new double[]
+        public static readonly double[] Table = new double[]
         {
             1.01, 1.02, 1.03, 1.04, 1.05, 1.06, 1.07, 1.08, 1.09,
             1.1, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.2,
@@ -268,6 +268,10 @@ namespace BetfairNG
             930.0, 940.0, 950.0, 960.0, 970.0, 980.0, 990.0, 1000.0
         };
 
+        private const double Max_Price = 1000.0;
+
+        private const double Min_Price = 1.01;
+
         public static double AddPip(double price)
         {
             return AddPip(price, 1);
@@ -275,9 +279,7 @@ namespace BetfairNG
 
         public static double AddPip(double price, int num)
         {
-            int index = Array.IndexOf(Table, price);
-
-            if (index == -1)
+            if (!IsValidPrice(price, out int index))
                 throw new ApplicationException($"Invalid Price: {price}");
 
             index += num;
@@ -287,7 +289,7 @@ namespace BetfairNG
 
         public static double ApplySpread(double price, double percentage)
         {
-            if (!IsValidPrice(price))
+            if (!IsValidPrice(price, out int _))
                 throw new ApplicationException($"Invalid Price: {price}");
 
             double adjustedPrice = price * percentage;
@@ -298,42 +300,39 @@ namespace BetfairNG
                 return RoundUpToNearestBetfairPrice(adjustedPrice);
         }
 
-        public static bool IsValidPrice(double price)
+        public static bool IsValidPrice(double price, out int index)
         {
-            return Table.Contains(price);
+            index = Array.BinarySearch(Table, price);
+
+            if (index < 0)
+                return false;
+            return true;
         }
 
         public static double RoundDownToNearestBetfairPrice(double price)
         {
-            if (IsValidPrice(price))
+            if (price >= Max_Price)
+                return Max_Price;
+            if (price <= Min_Price)
+                return Min_Price;
+
+            if (IsValidPrice(price, out int index))
                 return price;
 
-            int index = 0;
-            for (int i = 0; i < Table.Length; i++)
-            {
-                if (Table[i] > price)
-                    return Table[index];
-
-                index++;
-            }
-
-            return 0.0;
+            return Table[~index];
         }
 
         public static double RoundUpToNearestBetfairPrice(double price)
         {
-            if (IsValidPrice(price))
+            if (price >= Max_Price)
+                return Max_Price;
+            if (price <= Min_Price)
+                return Min_Price;
+
+            if (IsValidPrice(price, out int index))
                 return price;
 
-            for (int i = 0; i < Table.Length; i++)
-            {
-                if (Table[i] > price)
-                {
-                    return Table[i];
-                }
-            }
-
-            return 0.0;
+            return Table[~index];
         }
 
         /// <summary>
@@ -343,15 +342,11 @@ namespace BetfairNG
         /// <returns>the price if is is on the ladder or the value closest on the ladder below the input price</returns>
         public static double SnapToLadder(double price)
         {
-            if (IsValidPrice(price)) return price;
-
-            for (var index = 1; index < Table.Length; index++)
-            {
-                if (Table[index] > price)
-                    return Table[index - 1];
-            }
-
-            return Table.Last();
+            if (price > Table[^1])
+                return Table[^1];
+            if (IsValidPrice(price, out int index))
+                return price;
+            return Table[index - 1];
         }
 
         public static double SubtractPip(double price)
@@ -361,9 +356,7 @@ namespace BetfairNG
 
         public static double SubtractPip(double price, int num)
         {
-            int index = Array.IndexOf(Table, price);
-
-            if (index == -1)
+            if (!IsValidPrice(price, out int index))
                 throw new ApplicationException($"Invalid Price: {price}");
 
             index -= num;
