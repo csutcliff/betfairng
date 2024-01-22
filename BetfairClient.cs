@@ -184,7 +184,7 @@ namespace BetfairNG
 
         public Task<BetfairServerResponse<CancelExecutionReport>> CancelOrders(
             string marketId = null,
-            IList<CancelInstruction> instructions = null,
+            IEnumerable<CancelInstruction> instructions = null,
             string customerRef = null)
         {
             var args = new Dictionary<string, object>
@@ -494,7 +494,7 @@ namespace BetfairNG
 
         public Task<BetfairServerResponse<ReplaceExecutionReport>> ReplaceOrders(
             string marketId,
-            IList<ReplaceInstruction> instructions,
+            IEnumerable<ReplaceInstruction> instructions,
             string customerRef = null,
             MarketVersion marketVersion = null)
         {
@@ -522,7 +522,7 @@ namespace BetfairNG
 
         public Task<BetfairServerResponse<UpdateExecutionReport>> UpdateOrders(
             string marketId,
-            IList<UpdateInstruction> instructions,
+            IEnumerable<UpdateInstruction> instructions,
             string customerRef = null)
         {
             var args = new Dictionary<string, object>
