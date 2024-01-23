@@ -232,7 +232,7 @@ namespace BetfairNG
 
     public class PriceHelpers
     {
-        public static readonly ImmutableArray<double> Table = new ImmutableArray<double>()
+        public static readonly ImmutableArray<double> Table = new[]
         {
             1.01, 1.02, 1.03, 1.04, 1.05, 1.06, 1.07, 1.08, 1.09,
             1.1, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.2,
@@ -267,7 +267,7 @@ namespace BetfairNG
             750.0, 760.0, 770.0, 780.0, 790.0, 800.0, 810.0, 820.0, 830.0,
             840.0, 850.0, 860.0, 870.0, 880.0, 890.0, 900.0, 910.0, 920.0,
             930.0, 940.0, 950.0, 960.0, 970.0, 980.0, 990.0, 1000.0
-        };
+        }.ToImmutableArray();
 
         private const double Max_Price = 1000.0;
 
