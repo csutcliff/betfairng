@@ -8,6 +8,9 @@ on:
         required: true
         type: string
 
+env:
+  DOTNET_VERSION: '8.0.x'
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -18,7 +21,13 @@ jobs:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0
+        submodules: true
         token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Configure git
       run: |
@@ -50,3 +59,15 @@ jobs:
         name: v${{ inputs.version }}
         generate_release_notes: true
         draft: false
+
+    - name: Restore dependencies
+      run: dotnet restore BetfairNG.sln
+
+    - name: Build
+      run: dotnet build BetfairNG.sln --configuration Release --no-restore
+
+    - name: Pack
+      run: dotnet pack BetfairNG.csproj --configuration Release --no-build -p:PackageVersion=${{ inputs.version }} --output ./nupkg
+
+    - name: Push to NuGet.org
+      run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source "https://api.nuget.org/v3/index.json" --skip-duplicate
