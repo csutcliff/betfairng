@@ -1,0 +1,52 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 1.3.0)'
+        required: true
+        type: string
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Configure git
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Update version in csproj
+      run: |
+        sed -i 's/<AssemblyVersion>.*<\/AssemblyVersion>/<AssemblyVersion>${{ inputs.version }}.0<\/AssemblyVersion>/' BetfairNG.csproj
+        sed -i 's/<FileVersion>.*<\/FileVersion>/<FileVersion>${{ inputs.version }}.0<\/FileVersion>/' BetfairNG.csproj
+        sed -i 's/<AssemblyVersion>.*<\/AssemblyVersion>/<AssemblyVersion>${{ inputs.version }}.0<\/AssemblyVersion>/' BetfairNG.ESASwagger/BetfairNG.ESASwagger.csproj
+        sed -i 's/<FileVersion>.*<\/FileVersion>/<FileVersion>${{ inputs.version }}.0<\/FileVersion>/' BetfairNG.ESASwagger/BetfairNG.ESASwagger.csproj
+
+    - name: Commit version update
+      run: |
+        git add -A
+        git commit -m "Bump version to ${{ inputs.version }}" || echo "No changes to commit"
+        git push
+
+    - name: Create tag
+      run: |
+        git tag -a "v${{ inputs.version }}" -m "Release v${{ inputs.version }}"
+        git push origin "v${{ inputs.version }}"
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ inputs.version }}
+        name: v${{ inputs.version }}
+        generate_release_notes: true
+        draft: false
