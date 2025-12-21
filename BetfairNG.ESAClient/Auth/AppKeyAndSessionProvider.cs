@@ -2,7 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Security.Authentication;
 
 namespace Betfair.ESAClient.Auth
@@ -83,14 +83,13 @@ namespace Betfair.ESAClient.Auth
                     _username,
                     _password);
 
-                HttpWebRequest loginRequest = (HttpWebRequest)WebRequest.Create(uri);
-                loginRequest.Headers.Add("X-Application", _appkey);
-                loginRequest.Accept = "application/json";
-                loginRequest.Method = "POST";
-                loginRequest.Timeout = (int)Timeout.TotalMilliseconds;
-                WebResponse thePage = loginRequest.GetResponse();
-                using StreamReader reader = new(thePage.GetResponseStream());
-                string response = reader.ReadToEnd();
+                using var request = new HttpRequestMessage(HttpMethod.Post, uri);
+                request.Headers.Add("X-Application", _appkey);
+                request.Headers.Accept.ParseAdd("application/json");
+
+                using var client = new HttpClient { Timeout = Timeout };
+                using var httpResponse = client.SendAsync(request).GetAwaiter().GetResult();
+                string response = httpResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult();
                 Trace.TraceInformation("{0}: Response: {1}", _host, response);
                 sessionDetails = JsonConvert.DeserializeObject<SessionDetails>(response);
             }

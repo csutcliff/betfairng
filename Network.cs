@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
 using System.Net;
+using System.Net.Http;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,6 +15,25 @@ namespace BetfairNG
         public const int BetfairDelayLogTimeThreshold = 150;
 
         public static TraceSource TraceSource = new TraceSource("BetfairNG.Network");
+
+        private static readonly HttpClient _httpClient;
+
+        static Network()
+        {
+            var handler = new HttpClientHandler
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                SslProtocols = SslProtocols.Tls12
+            };
+
+            _httpClient = new HttpClient(handler)
+            {
+                Timeout = TimeSpan.FromMilliseconds(10000)
+            };
+
+            // Equivalent to ServicePointManager.Expect100Continue = false
+            _httpClient.DefaultRequestHeaders.ExpectContinue = false;
+        }
 
         public Network() : this(null, null)
         { }
@@ -34,8 +53,6 @@ namespace BetfairNG
             this.GZipCompress = gzipCompress;
             this.PreRequestAction = preRequestAction;
             this.Proxy = proxy;
-            // as per http://forum.bdp.betfair.com/showthread.php?t=2900
-            System.Net.ServicePointManager.Expect100Continue = false;
         }
 
         public string AppKey { get; set; }
@@ -55,6 +72,28 @@ namespace BetfairNG
         public int TimeoutMilliseconds { get; set; }
 
         public string UserAgent { get; set; }
+
+        private HttpClient GetHttpClient()
+        {
+            if (Proxy == null)
+                return _httpClient;
+
+            // Create dedicated client with proxy
+            var handler = new HttpClientHandler
+            {
+                Proxy = Proxy,
+                UseProxy = true,
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                SslProtocols = SslProtocols.Tls12
+            };
+
+            var client = new HttpClient(handler)
+            {
+                Timeout = TimeSpan.FromMilliseconds(TimeoutMilliseconds)
+            };
+            client.DefaultRequestHeaders.ExpectContinue = false;
+            return client;
+        }
 
         public Task<BetfairServerResponse<T>> Invoke<T>(
             Endpoint endpoint,
@@ -101,66 +140,37 @@ namespace BetfairNG
 
         public BetfairServerResponse<KeepAliveResponse> KeepAliveSynchronous()
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://identitysso.betfair.com/api/keepAlive");
-            request.UseDefaultCredentials = true;
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.Headers.Add("X-Application", this.AppKey);
-            request.Headers.Add("X-Authentication", this.SessionToken);
-            request.Accept = "application/json";
-            if (this.Proxy != null)
-                request.Proxy = this.Proxy;
-
             TraceSource.TraceInformation("KeepAlive");
             DateTime requestStart = DateTime.Now;
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
+            Stopwatch watch = Stopwatch.StartNew();
 
-            using Stream stream = ((HttpWebResponse)request.GetResponse()).GetResponseStream();
-            using StreamReader reader = new StreamReader(stream, Encoding.Default);
+            using var request = new HttpRequestMessage(HttpMethod.Post, "https://identitysso.betfair.com/api/keepAlive");
+            request.Headers.Add("X-Application", AppKey);
+            request.Headers.Add("X-Authentication", SessionToken);
+            request.Headers.Accept.ParseAdd("application/json");
+
+            var client = GetHttpClient();
+            using var response = client.SendAsync(request).GetAwaiter().GetResult();
             var lastByte = DateTime.Now;
-            var response = JsonConvert.Deserialize<KeepAliveResponse>(reader.ReadToEnd());
+
+            var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            var keepAliveResponse = JsonConvert.Deserialize<KeepAliveResponse>(content);
+
             watch.Stop();
             TraceSource.TraceInformation("KeepAlive finish: {0}ms", watch.ElapsedMilliseconds);
-            BetfairServerResponse<KeepAliveResponse> r = new BetfairServerResponse<KeepAliveResponse>
+
+            return new BetfairServerResponse<KeepAliveResponse>
             {
-                HasError = !string.IsNullOrWhiteSpace(response.Error),
-                Response = response,
+                HasError = !string.IsNullOrWhiteSpace(keepAliveResponse.Error),
+                Response = keepAliveResponse,
                 LastByte = lastByte,
                 RequestStart = requestStart
             };
-            return r;
         }
 
         private string FormatEndpoint(Endpoint endpoint)
         {
             return endpoint == Endpoint.Betting ? "betting" : "account";
-        }
-
-        private string GetResponseHtml(HttpWebResponse response)
-        {
-            var html = string.Empty;
-
-            using (var responseStream = response.GetResponseStream())
-            {
-                if (response.ContentEncoding.ToLower().Contains("gzip"))
-                {
-                    using GZipStream gzipStream = new GZipStream(responseStream, CompressionMode.Decompress);
-                    using StreamReader streamReader = new StreamReader(gzipStream, Encoding.Default);
-                    html = streamReader.ReadToEnd();
-                }
-                else if (response.ContentEncoding.ToLower().Contains("deflate"))
-                {
-                    using DeflateStream deflateStream = new DeflateStream(responseStream, CompressionMode.Decompress);
-                    using StreamReader streamReader = new StreamReader(deflateStream, Encoding.Default);
-                    html = streamReader.ReadToEnd();
-                }
-                else
-                    using (StreamReader reader = new StreamReader(responseStream))
-                        html = reader.ReadToEnd();
-            }
-
-            return html;
         }
 
         private async Task<string> Request(
@@ -171,52 +181,36 @@ namespace BetfairNG
             string sessionToken)
         {
             var sw = Stopwatch.StartNew();
-            if (this.PreRequestAction != null)
-                PreRequestAction();
+            PreRequestAction?.Invoke();
 
-            var request = (HttpWebRequest)WebRequest.Create(url);
+            using var request = new HttpRequestMessage(HttpMethod.Post, url);
 
-            var postData = Encoding.UTF8.GetBytes(requestPostData);
-            request.Method = "POST";
-            request.ContentType = contentType;
+            // Content
+            request.Content = new StringContent(requestPostData, Encoding.UTF8, contentType);
+
+            // Headers
             if (!string.IsNullOrWhiteSpace(appKey))
                 request.Headers.Add("X-Application", appKey);
             if (!string.IsNullOrWhiteSpace(sessionToken))
                 request.Headers.Add("X-Authentication", sessionToken);
-            request.Headers.Add(HttpRequestHeader.AcceptCharset, "ISO-8859-1,utf-8");
-            request.AllowAutoRedirect = true;
-            request.ContentLength = postData.Length;
-            request.KeepAlive = true;
-            if (this.Proxy != null)
-                request.Proxy = this.Proxy;
+            request.Headers.Add("Accept-Charset", "ISO-8859-1,utf-8");
+            request.Headers.Add("Accept-Language", "en-US");
+            request.Headers.Add("Pragma", "no-cache");
+            request.Headers.Add("Cache-Control", "no-cache");
+            request.Headers.UserAgent.ParseAdd(UserAgent);
 
-            if (this.GZipCompress)
-                request.Headers.Add(HttpRequestHeader.AcceptEncoding, "gzip, deflate");
-            request.Headers.Add(HttpRequestHeader.AcceptLanguage, "en-US");
-            request.UserAgent = UserAgent;
-            request.Headers.Add(HttpRequestHeader.Pragma, "no-cache");
-            request.Headers.Add(HttpRequestHeader.CacheControl, "no-cache");
+            if (GZipCompress)
+                request.Headers.AcceptEncoding.ParseAdd("gzip, deflate");
 
-            Uri uri = new Uri(url);
-            request.Host = uri.Host;
-
-            if (TimeoutMilliseconds != 0)
-                request.Timeout = TimeoutMilliseconds;
-
-            var stream = await request.GetRequestStreamAsync();
-
-            using (stream)
-                stream.Write(postData, 0, postData.Length);
-
-            var webResponse = await request.GetResponseAsync();
+            var client = GetHttpClient();
+            using var response = await client.SendAsync(request);
 
             sw.Stop();
 
             if (sw.ElapsedMilliseconds > BetfairDelayLogTimeThreshold)
                 Trace.TraceInformation("Betfair request time taken is '{0}' the request Timeout is {1} to {2}", sw.ElapsedMilliseconds, TimeoutMilliseconds, url);
 
-            using (webResponse)
-                return GetResponseHtml((HttpWebResponse)webResponse);
+            return await response.Content.ReadAsStringAsync();
         }
 
         private BetfairServerResponse<T> ToResponse<T>(JsonResponse<T> response, DateTime requestStart, DateTime lastByteStamp, long latency)

@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -537,36 +539,37 @@ namespace BetfairNG
 
         private bool Login(X509Certificate2 x509certificate, string postData, string loginUrl)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(loginUrl);
-            request.UseDefaultCredentials = true;
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
+            var handler = new HttpClientHandler
+            {
+                ClientCertificates = { x509certificate },
+                SslProtocols = SslProtocols.Tls12
+            };
+
+            if (proxy != null)
+            {
+                handler.Proxy = proxy;
+                handler.UseProxy = true;
+            }
+
+            using var client = new HttpClient(handler);
+
+            using var request = new HttpRequestMessage(HttpMethod.Post, loginUrl);
             request.Headers.Add("X-Application", appKey);
-            request.ClientCertificates.Add(x509certificate);
-            request.Accept = "*/*";
-            if (this.proxy != null)
-                request.Proxy = this.proxy;
+            request.Headers.Accept.ParseAdd("*/*");
+            request.Content = new StringContent(postData, Encoding.Default, "application/x-www-form-urlencoded");
 
-            using (Stream stream = request.GetRequestStream())
-            using (StreamWriter writer = new StreamWriter(stream, Encoding.Default))
+            using var response = client.SendAsync(request).GetAwaiter().GetResult();
+            var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+
+            var jsonResponse = JsonConvert.Deserialize<LoginResponse>(content);
+            if (jsonResponse.LoginStatus == "SUCCESS")
             {
-                writer.Write(postData);
+                sessionToken = jsonResponse.SessionToken;
+                networkClient = new Network(appKey, sessionToken, preNetworkRequest, true, proxy);
+                return true;
             }
 
-            using (Stream stream = ((HttpWebResponse)request.GetResponse()).GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream, Encoding.Default))
-            {
-                var jsonResponse = JsonConvert.Deserialize<LoginResponse>(reader.ReadToEnd());
-                if (jsonResponse.LoginStatus == "SUCCESS")
-                {
-                    this.sessionToken = jsonResponse.SessionToken;
-                    this.networkClient = new Network(appKey, this.sessionToken, this.preNetworkRequest);
-
-                    return true;
-                }
-                else
-                    return false;
-            }
+            return false;
         }
     }
 
