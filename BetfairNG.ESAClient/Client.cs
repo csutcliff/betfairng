@@ -88,6 +88,7 @@ namespace Betfair.ESAClient
             Timeout = TimeSpan.FromSeconds(30);
             ReconnectBackOff = TimeSpan.FromSeconds(15);
             KeepAliveHeartbeat = TimeSpan.FromHours(1);
+            MaxReconnectAttempts = 3;
         }
 
         /// <summary>
@@ -148,6 +149,12 @@ namespace Betfair.ESAClient
         /// data subscription.
         /// </summary>
         public MarketDataFilter MarketDataFilter { get; set; }
+
+        /// <summary>
+        /// Maximum consecutive reconnect attempts before giving up (default is 3).
+        /// Set to 0 for unlimited attempts.
+        /// </summary>
+        public int MaxReconnectAttempts { get; set; }
 
         /// <summary>
         /// Specifies the connection retry back-off (default is 15s)
@@ -375,13 +382,27 @@ namespace Betfair.ESAClient
                     OrderSubscription(orderSubscription);
                 }
 
+                //If we authenticated but have nothing to subscribe to, stop reconnecting.
+                //This prevents an infinite reconnect loop at end of day when all markets are closed.
+                if (marketSubscription == null && orderSubscription == null)
+                {
+                    Trace.TraceWarning("ESAClient: No subscriptions to restore after reconnect, stopping.");
+                    _isStopping = true;
+                    Disconnect();
+                    return;
+                }
+
                 //Reset counter
                 ReconnectCounter = 0;
             }
             catch (Exception e)
             {
-                Trace.TraceError("Reconnect failed", e);
+                Trace.TraceError("Reconnect failed: {0}", e);
                 ReconnectCounter++;
+
+                //Force disconnect to avoid leaving an idle authenticated connection
+                //that would trigger the server's 15-second idle timeout.
+                Disconnect();
             }
         }
 
@@ -434,18 +455,24 @@ namespace Betfair.ESAClient
         {
             DisconnectCounter++;
 
-            if (_isStarted && !_isStopping && AutoReconnect)
+            //Fire DISCONNECTED status before checking AutoReconnect so that
+            //consumers can inspect state and set AutoReconnect = false to prevent
+            //reconnection (e.g. when all subscribed markets have closed).
+            _processor.Disconnected();
+
+            if (_isStarted && !_isStopping && AutoReconnect
+                && (MaxReconnectAttempts == 0 || ReconnectCounter < MaxReconnectAttempts))
             {
-                //we've started (successfully) and we're not stopping & should autoreconnect
-
-                //disconnected
-                _processor.Disconnected();
-
                 //try and reconnect
                 TryReconnect();
             }
             else
             {
+                if (MaxReconnectAttempts > 0 && ReconnectCounter >= MaxReconnectAttempts)
+                {
+                    Trace.TraceWarning("ESAClient: Max reconnect attempts ({0}) reached, stopping.", MaxReconnectAttempts);
+                }
+
                 //stopped
                 _processor.Stopped();
 
