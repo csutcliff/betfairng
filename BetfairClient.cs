@@ -227,6 +227,9 @@ namespace BetfairNG
 
         public BetfairServerResponse<KeepAliveResponse> KeepAlive()
         {
+            if (networkClient == null)
+                throw new InvalidOperationException("BetfairClient is not logged in. Call Login() before making API requests.");
+
             return networkClient.KeepAliveSynchronous();
         }
 
@@ -318,6 +321,9 @@ namespace BetfairNG
 
         public Task<BetfairServerResponse<List<EventResult>>> ListEvents(MarketFilter marketFilter)
         {
+            if (networkClient == null)
+                throw new InvalidOperationException("BetfairClient is not logged in. Call Login() before making API requests.");
+
             var args = new Dictionary<string, object>
             {
                 [FILTER] = marketFilter
@@ -340,6 +346,9 @@ namespace BetfairNG
             OrderProjection? orderProjection = null,
             MatchProjection? matchProjection = null)
         {
+            if (networkClient == null)
+                throw new InvalidOperationException("BetfairClient is not logged in. Call Login() before making API requests.");
+
             var args = new Dictionary<string, object>
             {
                 [MARKET_IDS] = marketIds,
@@ -356,6 +365,9 @@ namespace BetfairNG
             MarketSort? sort = null,
             int maxResult = 1)
         {
+            if (networkClient == null)
+                throw new InvalidOperationException("BetfairClient is not logged in. Call Login() before making API requests.");
+
             var args = new Dictionary<string, object>
             {
                 [FILTER] = marketFilter,
