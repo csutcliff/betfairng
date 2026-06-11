@@ -344,14 +344,7 @@ namespace BetfairNG
         /// <returns>the price if is is on the ladder or the value closest on the ladder below the input price</returns>
         public static double SnapToLadder(double price)
         {
-            if (price > Table[^1])
-                return Table[^1];
-            if (price <= Table[0])
-                return Table[0];
-            if (IsValidPrice(price, out int index))
-                return price;
-            // ~index is the insertion point (first ladder value above price)
-            return Table[~index - 1];
+            return RoundDownToNearestBetfairPrice(price);
         }
 
         public static double SubtractPip(double price)
