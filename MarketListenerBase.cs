@@ -49,7 +49,9 @@ namespace BetfairNG
               {
                   var subscription = marketTicks.Subscribe(tick =>
                       {
-                          var runner = tick.Runners.First(c => c.SelectionId == selectionId);
+                          // the selection may be absent from a tick (e.g. removed runner)
+                          var runner = tick.Runners?.FirstOrDefault(c => c.SelectionId == selectionId);
+                          if (runner == null) return;
                           // attach the book
                           runner.MarketBook = tick;
                           observer.OnNext(runner);
