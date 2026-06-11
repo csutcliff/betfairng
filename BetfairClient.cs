@@ -66,11 +66,15 @@ namespace BetfairNG
 
         private static readonly string INCLUDE_BSP_BETS = "includeBspBets";
 
+        private static readonly string INCLUDE_ITEM = "includeItem";
+
         private static readonly string INCLUDE_ITEM_DESCRIPTION = "includeItemDescription";
 
         private static readonly string INCLUDE_SETTLED_BETS = "includeSettledBets";
 
         private static readonly string INSTRUCTIONS = "instructions";
+
+        private static readonly string ITEM_DATE_RANGE = "itemDateRange";
 
         private static readonly string LIST_CLEARED_ORDERS_METHOD = "SportsAPING/v1.0/listClearedOrders";
 
@@ -221,7 +225,14 @@ namespace BetfairNG
             IncludeItem? includeItem = null,
             Wallet? wallet = null)
         {
-            var args = new Dictionary<string, object>();
+            var args = new Dictionary<string, object>
+            {
+                [FROM_RECORD] = fromRecord,
+                [RECORD_COUNT] = recordCount,
+                [ITEM_DATE_RANGE] = itemDateRange,
+                [INCLUDE_ITEM] = includeItem,
+                [WALLET] = wallet
+            };
             return networkClient.Invoke<AccountStatementReport>(Endpoint.Account, GET_ACCOUNT_STATEMENT, args);
         }
 
