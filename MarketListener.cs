@@ -82,7 +82,7 @@ namespace BetfairNG
                                     lock (lockObj)
                                         lastRequestStart = DateTime.Now;
 
-                                    var book = client.ListMarketBook(Markets.Keys.ToList(), this.priceProjection).Result;
+                                    var book = client.ListMarketBook(Markets.Keys, this.priceProjection).Result;
 
                                     if (!book.HasError)
                                     {

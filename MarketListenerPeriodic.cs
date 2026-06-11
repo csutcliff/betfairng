@@ -66,7 +66,7 @@ namespace BetfairNG
 
         private void Poll()
         {
-            var book = _client.ListMarketBook(Markets.Keys.ToList(), this._priceProjection).Result;
+            var book = _client.ListMarketBook(Markets.Keys, this._priceProjection).Result;
 
             if (book.HasError)
             {
