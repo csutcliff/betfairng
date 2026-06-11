@@ -43,6 +43,8 @@ namespace Betfair.ESASwagger.Model
     /// <param name="MarketTime">MarketTime.</param>
     /// <param name="BspReconciled">BspReconciled.</param>
     /// <param name="Status">Status.</param>
+    /// <param name="SuspendReason">The reason the market was suspended.</param>
+    /// <param name="BetDelayModels">BetDelayModels.</param>
     [DataContract]
     public class MarketDefinition(
         string Venue = null,
@@ -73,7 +75,9 @@ MarketDefinition.BettingTypeEnum? BettingType = null,
         DateTime? OpenDate = null,
         DateTime? MarketTime = null,
         bool? BspReconciled = null,
-MarketDefinition.StatusEnum? Status = null) : IEquatable<MarketDefinition>
+MarketDefinition.StatusEnum? Status = null,
+        string SuspendReason = null,
+        List<string> BetDelayModels = null) : IEquatable<MarketDefinition>
     {
 
         /// <summary>
@@ -122,6 +126,12 @@ MarketDefinition.StatusEnum? Status = null) : IEquatable<MarketDefinition>
         /// </summary>
         [DataMember(Name = "betDelay", EmitDefaultValue = false)]
         public int? BetDelay { get; set; } = BetDelay;
+
+        /// <summary>
+        ///     Gets or Sets BetDelayModels
+        /// </summary>
+        [DataMember(Name = "betDelayModels", EmitDefaultValue = false)]
+        public List<string> BetDelayModels { get; set; } = BetDelayModels;
 
         /// <summary>
         ///     Gets or Sets BettingType
@@ -264,6 +274,13 @@ MarketDefinition.StatusEnum? Status = null) : IEquatable<MarketDefinition>
         public StatusEnum? Status { get; set; } = Status;
 
         /// <summary>
+        ///     The reason the market was suspended.
+        /// </summary>
+        /// <value>The reason the market was suspended.</value>
+        [DataMember(Name = "suspendReason", EmitDefaultValue = false)]
+        public string SuspendReason { get; set; } = SuspendReason;
+
+        /// <summary>
         ///     Gets or Sets SuspendTime
         /// </summary>
         [DataMember(Name = "suspendTime", EmitDefaultValue = false)]
@@ -343,7 +360,9 @@ MarketDefinition.StatusEnum? Status = null) : IEquatable<MarketDefinition>
                    (OpenDate == other.OpenDate || OpenDate != null && OpenDate.Equals(other.OpenDate)) &&
                    (MarketTime == other.MarketTime || MarketTime != null && MarketTime.Equals(other.MarketTime)) &&
                    (BspReconciled == other.BspReconciled || BspReconciled != null && BspReconciled.Equals(other.BspReconciled)) &&
-                   (Status == other.Status || Status != null && Status.Equals(other.Status));
+                   (Status == other.Status || Status != null && Status.Equals(other.Status)) &&
+                   (SuspendReason == other.SuspendReason || SuspendReason != null && SuspendReason.Equals(other.SuspendReason)) &&
+                   (BetDelayModels == other.BetDelayModels || BetDelayModels != null && other.BetDelayModels != null && BetDelayModels.SequenceEqual(other.BetDelayModels));
         }
 
         /// <summary>
@@ -444,6 +463,12 @@ MarketDefinition.StatusEnum? Status = null) : IEquatable<MarketDefinition>
 
                 if (Status != null)
                     hash = hash * 59 + Status.GetHashCode();
+
+                if (SuspendReason != null)
+                    hash = hash * 59 + SuspendReason.GetHashCode();
+
+                if (BetDelayModels != null)
+                    hash = hash * 59 + BetDelayModels.GetHashCode();
 
                 return hash;
             }
@@ -552,6 +577,12 @@ MarketDefinition.StatusEnum? Status = null) : IEquatable<MarketDefinition>
                 .Append("\n");
             sb.Append("  Status: ")
                 .Append(Status)
+                .Append("\n");
+            sb.Append("  SuspendReason: ")
+                .Append(SuspendReason)
+                .Append("\n");
+            sb.Append("  BetDelayModels: ")
+                .Append(BetDelayModels)
                 .Append("\n");
 
             sb.Append("}\n");
