@@ -320,7 +320,8 @@ namespace BetfairNG
             if (IsValidPrice(price, out int index))
                 return price;
 
-            return Table[~index];
+            // ~index is the insertion point (first ladder value above price)
+            return Table[~index - 1];
         }
 
         public static double RoundUpToNearestBetfairPrice(double price)
