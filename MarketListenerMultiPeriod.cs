@@ -73,7 +73,9 @@ namespace BetfairNG
         private void CleanUpPolling(string marketId)
         {
             // Find the interval that the market is now running under
-            var interval = _marketPollInterval.First(search => search.Value.Keys.Contains(marketId)).Key;
+            var entry = _marketPollInterval.FirstOrDefault(search => search.Value.Keys.Contains(marketId));
+            if (entry.Value == null) return;
+            var interval = entry.Key;
 
             if (_marketPollInterval.TryGetValue(interval, out ConcurrentDictionary<string, bool> mpi))
             {
