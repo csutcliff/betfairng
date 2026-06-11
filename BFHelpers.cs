@@ -24,15 +24,6 @@ namespace BetfairNG
                 return 0.0;
         }
 
-        public static List<T> Copy<T>(this List<T> list)
-        {
-            List<T> newList = new List<T>();
-            for (int i = 0; i < list.Count; i++)
-                newList.Add(list[i]);
-
-            return newList;
-        }
-
         public static double GetMarketEfficiency(IEnumerable<double> odds)
         {
             double total = odds.Sum(c => 1.0 / c);
