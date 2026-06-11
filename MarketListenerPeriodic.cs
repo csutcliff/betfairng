@@ -1,23 +1,15 @@
-﻿using BetfairNG.Data;
+using BetfairNG.Data;
 using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Reactive.Concurrency;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
 
 namespace BetfairNG
 {
-    public class MarketListenerPeriodic : IDisposable
+    public class MarketListenerPeriodic : MarketListenerBase, IDisposable
     {
         private readonly BetfairClient _client;
         private readonly object _lockObj = new object();
-
-        private readonly ConcurrentDictionary<string, IObservable<MarketBook>> _markets =
-            new ConcurrentDictionary<string, IObservable<MarketBook>>();
-
-        private readonly ConcurrentDictionary<string, IObserver<MarketBook>> _observers =
-            new ConcurrentDictionary<string, IObserver<MarketBook>>();
 
         private readonly IDisposable _polling;
         private readonly PriceProjection _priceProjection;
@@ -49,56 +41,36 @@ namespace BetfairNG
 
         public IObservable<MarketBook> SubscribeMarketBook(string marketId)
         {
-            if (_markets.TryGetValue(marketId, out IObservable<MarketBook> market))
-                return market;
-
-            var observable = Observable.Create<MarketBook>(
-               (IObserver<MarketBook> observer) =>
-               {
-                   _observers.AddOrUpdate(marketId, observer, (key, existingVal) => existingVal);
-                   return Disposable.Create(() =>
-                       {
-                           _markets.TryRemove(marketId, out IObservable<MarketBook> o);
-                           _observers.TryRemove(marketId, out IObserver<MarketBook> ob);
-                       });
-               })
-               .Publish()
-               .RefCount();
-
-            _markets.AddOrUpdate(marketId, observable, (key, existingVal) => existingVal);
-            return observable;
+            return GetOrCreateMarketBookObservable(marketId);
         }
 
         public IObservable<Runner> SubscribeRunner(string marketId, long selectionId)
         {
-            var marketTicks = SubscribeMarketBook(marketId);
-
-            var observable = Observable.Create<Runner>(
-              (IObserver<Runner> observer) =>
-              {
-                  var subscription = marketTicks.Subscribe(tick =>
-                      {
-                          var runner = tick.Runners.First(c => c.SelectionId == selectionId);
-                          // attach the book
-                          runner.MarketBook = tick;
-                          observer.OnNext(runner);
-                      });
-
-                  return Disposable.Create(() => subscription.Dispose());
-              })
-              .Publish()
-              .RefCount();
-
-            return observable;
+            return CreateRunnerObservable(SubscribeMarketBook(marketId), selectionId);
         }
 
         private void DoWork()
         {
-            var book = _client.ListMarketBook(_markets.Keys.ToList(), this._priceProjection).Result;
+            try
+            {
+                Poll();
+            }
+            catch (Exception ex)
+            {
+                // a throw here would tear down the Interval subscription and
+                // silently stop all polling; OnError the affected subscriptions instead
+                foreach (var observer in Observers)
+                    observer.Value.OnError(ex);
+            }
+        }
+
+        private void Poll()
+        {
+            var book = _client.ListMarketBook(Markets.Keys, this._priceProjection).Result;
 
             if (book.HasError)
             {
-                foreach (var observer in _observers)
+                foreach (var observer in Observers)
                     observer.Value.OnError(book.Error);
                 return;
             }
@@ -113,17 +85,7 @@ namespace BetfairNG
                 _latestDataRequestFinish = book.LastByte;
             }
 
-            foreach (var market in book.Response)
-            {
-                if (!_observers.TryGetValue(market.MarketId, out IObserver<MarketBook> o)) continue;
-
-                // check to see if the market is finished
-                if (market.Status == MarketStatus.CLOSED ||
-                    market.Status == MarketStatus.INACTIVE)
-                    o.OnCompleted();
-                else
-                    o.OnNext(market);
-            }
+            PublishMarketBooks(book.Response);
         }
     }
 }

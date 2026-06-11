@@ -66,11 +66,15 @@ namespace BetfairNG
 
         private static readonly string INCLUDE_BSP_BETS = "includeBspBets";
 
+        private static readonly string INCLUDE_ITEM = "includeItem";
+
         private static readonly string INCLUDE_ITEM_DESCRIPTION = "includeItemDescription";
 
         private static readonly string INCLUDE_SETTLED_BETS = "includeSettledBets";
 
         private static readonly string INSTRUCTIONS = "instructions";
+
+        private static readonly string ITEM_DATE_RANGE = "itemDateRange";
 
         private static readonly string LIST_CLEARED_ORDERS_METHOD = "SportsAPING/v1.0/listClearedOrders";
 
@@ -160,6 +164,17 @@ namespace BetfairNG
 
         private string sessionToken;
 
+        private Network NetworkClient
+        {
+            get
+            {
+                if (networkClient == null)
+                    throw new InvalidOperationException("BetfairClient is not logged in. Call Login() before making API requests.");
+
+                return networkClient;
+            }
+        }
+
         public BetfairClient(string appKey, Action preNetworkRequest = null, WebProxy proxy = null)
         {
             if (string.IsNullOrWhiteSpace(appKey)) throw new ArgumentException("appKey");
@@ -196,13 +211,13 @@ namespace BetfairNG
                 [CUSTOMER_REFERENCE] = customerRef
             };
 
-            return networkClient.Invoke<CancelExecutionReport>(Endpoint.Betting, CANCEL_ORDERS_METHOD, args);
+            return NetworkClient.Invoke<CancelExecutionReport>(Endpoint.Betting, CANCEL_ORDERS_METHOD, args);
         }
 
         public Task<BetfairServerResponse<AccountDetailsResponse>> GetAccountDetails()
         {
             var args = new Dictionary<string, object>();
-            return networkClient.Invoke<AccountDetailsResponse>(Endpoint.Account, GET_ACCOUNT_DETAILS, args);
+            return NetworkClient.Invoke<AccountDetailsResponse>(Endpoint.Account, GET_ACCOUNT_DETAILS, args);
         }
 
         public Task<BetfairServerResponse<AccountFundsResponse>> GetAccountFunds(Wallet wallet)
@@ -211,7 +226,7 @@ namespace BetfairNG
             {
                 [WALLET] = wallet
             };
-            return networkClient.Invoke<AccountFundsResponse>(Endpoint.Account, GET_ACCOUNT_FUNDS, args);
+            return NetworkClient.Invoke<AccountFundsResponse>(Endpoint.Account, GET_ACCOUNT_FUNDS, args);
         }
 
         public Task<BetfairServerResponse<AccountStatementReport>> GetAccountStatement(
@@ -221,16 +236,20 @@ namespace BetfairNG
             IncludeItem? includeItem = null,
             Wallet? wallet = null)
         {
-            var args = new Dictionary<string, object>();
-            return networkClient.Invoke<AccountStatementReport>(Endpoint.Account, GET_ACCOUNT_STATEMENT, args);
+            var args = new Dictionary<string, object>
+            {
+                [FROM_RECORD] = fromRecord,
+                [RECORD_COUNT] = recordCount,
+                [ITEM_DATE_RANGE] = itemDateRange,
+                [INCLUDE_ITEM] = includeItem,
+                [WALLET] = wallet
+            };
+            return NetworkClient.Invoke<AccountStatementReport>(Endpoint.Account, GET_ACCOUNT_STATEMENT, args);
         }
 
         public BetfairServerResponse<KeepAliveResponse> KeepAlive()
         {
-            if (networkClient == null)
-                throw new InvalidOperationException("BetfairClient is not logged in. Call Login() before making API requests.");
-
-            return networkClient.KeepAliveSynchronous();
+            return NetworkClient.KeepAliveSynchronous();
         }
 
         public Task<BetfairServerResponse<ClearedOrderSummaryReport>> ListClearedOrders(
@@ -263,7 +282,7 @@ namespace BetfairNG
                 [RECORD_COUNT] = recordCount
             };
 
-            return networkClient.Invoke<ClearedOrderSummaryReport>(Endpoint.Betting, LIST_CLEARED_ORDERS_METHOD, args);
+            return NetworkClient.Invoke<ClearedOrderSummaryReport>(Endpoint.Betting, LIST_CLEARED_ORDERS_METHOD, args);
         }
 
         public Task<BetfairServerResponse<List<CompetitionResult>>> ListCompetitions(MarketFilter marketFilter)
@@ -272,7 +291,7 @@ namespace BetfairNG
             {
                 [FILTER] = marketFilter
             };
-            return networkClient.Invoke<List<CompetitionResult>>(Endpoint.Betting, LIST_COMPETITIONS_METHOD, args);
+            return NetworkClient.Invoke<List<CompetitionResult>>(Endpoint.Betting, LIST_COMPETITIONS_METHOD, args);
         }
 
         public Task<BetfairServerResponse<List<CountryCodeResult>>> ListCountries(MarketFilter marketFilter)
@@ -281,7 +300,7 @@ namespace BetfairNG
             {
                 [FILTER] = marketFilter
             };
-            return networkClient.Invoke<List<CountryCodeResult>>(Endpoint.Betting, LIST_COUNTRIES_METHOD, args);
+            return NetworkClient.Invoke<List<CountryCodeResult>>(Endpoint.Betting, LIST_COUNTRIES_METHOD, args);
         }
 
         public Task<BetfairServerResponse<List<CurrencyRate>>> ListCurrencyRates(string fromCurrency)
@@ -290,7 +309,7 @@ namespace BetfairNG
             {
                 [FROM_CURRENCY] = fromCurrency
             };
-            return networkClient.Invoke<List<CurrencyRate>>(Endpoint.Account, LIST_CURRENCY_RATES, args);
+            return NetworkClient.Invoke<List<CurrencyRate>>(Endpoint.Account, LIST_CURRENCY_RATES, args);
         }
 
         public Task<BetfairServerResponse<CurrentOrderSummaryReport>> ListCurrentOrders(
@@ -316,19 +335,16 @@ namespace BetfairNG
                 [FROM_RECORD] = fromRecord,
                 [RECORD_COUNT] = recordCount
             };
-            return networkClient.Invoke<CurrentOrderSummaryReport>(Endpoint.Betting, LIST_CURRENT_ORDERS_METHOD, args);
+            return NetworkClient.Invoke<CurrentOrderSummaryReport>(Endpoint.Betting, LIST_CURRENT_ORDERS_METHOD, args);
         }
 
         public Task<BetfairServerResponse<List<EventResult>>> ListEvents(MarketFilter marketFilter)
         {
-            if (networkClient == null)
-                throw new InvalidOperationException("BetfairClient is not logged in. Call Login() before making API requests.");
-
             var args = new Dictionary<string, object>
             {
                 [FILTER] = marketFilter
             };
-            return networkClient.Invoke<List<EventResult>>(Endpoint.Betting, LIST_EVENTS_METHOD, args);
+            return NetworkClient.Invoke<List<EventResult>>(Endpoint.Betting, LIST_EVENTS_METHOD, args);
         }
 
         public Task<BetfairServerResponse<List<EventTypeResult>>> ListEventTypes(MarketFilter marketFilter)
@@ -337,7 +353,7 @@ namespace BetfairNG
             {
                 [FILTER] = marketFilter
             };
-            return networkClient.Invoke<List<EventTypeResult>>(Endpoint.Betting, LIST_EVENT_TYPES_METHOD, args);
+            return NetworkClient.Invoke<List<EventTypeResult>>(Endpoint.Betting, LIST_EVENT_TYPES_METHOD, args);
         }
 
         public Task<BetfairServerResponse<List<MarketBook>>> ListMarketBook(
@@ -346,9 +362,6 @@ namespace BetfairNG
             OrderProjection? orderProjection = null,
             MatchProjection? matchProjection = null)
         {
-            if (networkClient == null)
-                throw new InvalidOperationException("BetfairClient is not logged in. Call Login() before making API requests.");
-
             var args = new Dictionary<string, object>
             {
                 [MARKET_IDS] = marketIds,
@@ -356,7 +369,7 @@ namespace BetfairNG
                 [ORDER_PROJECTION] = orderProjection,
                 [MATCH_PROJECTION] = matchProjection
             };
-            return networkClient.Invoke<List<MarketBook>>(Endpoint.Betting, LIST_MARKET_BOOK_METHOD, args);
+            return NetworkClient.Invoke<List<MarketBook>>(Endpoint.Betting, LIST_MARKET_BOOK_METHOD, args);
         }
 
         public Task<BetfairServerResponse<List<MarketCatalogue>>> ListMarketCatalogue(
@@ -365,9 +378,6 @@ namespace BetfairNG
             MarketSort? sort = null,
             int maxResult = 1)
         {
-            if (networkClient == null)
-                throw new InvalidOperationException("BetfairClient is not logged in. Call Login() before making API requests.");
-
             var args = new Dictionary<string, object>
             {
                 [FILTER] = marketFilter,
@@ -375,7 +385,7 @@ namespace BetfairNG
                 [SORT] = sort,
                 [MAX_RESULTS] = maxResult
             };
-            return networkClient.Invoke<List<MarketCatalogue>>(Endpoint.Betting, LIST_MARKET_CATALOGUE_METHOD, args);
+            return NetworkClient.Invoke<List<MarketCatalogue>>(Endpoint.Betting, LIST_MARKET_CATALOGUE_METHOD, args);
         }
 
         public Task<BetfairServerResponse<List<MarketProfitAndLoss>>> ListMarketProfitAndLoss(
@@ -391,7 +401,7 @@ namespace BetfairNG
                 [INCLUDE_BSP_BETS] = includeBsbBets,
                 [NET_OF_COMMISSION] = netOfCommission
             };
-            return networkClient.Invoke<List<MarketProfitAndLoss>>(Endpoint.Betting, LIST_MARKET_PROFIT_AND_LOSS, args);
+            return NetworkClient.Invoke<List<MarketProfitAndLoss>>(Endpoint.Betting, LIST_MARKET_PROFIT_AND_LOSS, args);
         }
 
         public Task<BetfairServerResponse<List<MarketTypeResult>>> ListMarketTypes(MarketFilter marketFilter)
@@ -400,7 +410,7 @@ namespace BetfairNG
             {
                 [FILTER] = marketFilter
             };
-            return networkClient.Invoke<List<MarketTypeResult>>(Endpoint.Betting, LIST_MARKET_TYPES, args);
+            return NetworkClient.Invoke<List<MarketTypeResult>>(Endpoint.Betting, LIST_MARKET_TYPES, args);
         }
 
         public Task<BetfairServerResponse<List<RaceDetails>>> ListRaceDetails(
@@ -412,7 +422,7 @@ namespace BetfairNG
                 [MEETINGIDS] = meetingIds,
                 [RACEIDS] = raceIds
             };
-            return networkClient.Invoke<List<RaceDetails>>(Endpoint.Scores, LIST_RACE_DETAILS, args);
+            return NetworkClient.Invoke<List<RaceDetails>>(Endpoint.Scores, LIST_RACE_DETAILS, args);
         }
 
         public Task<BetfairServerResponse<List<TimeRangeResult>>> ListTimeRanges(MarketFilter marketFilter, TimeGranularity timeGranularity)
@@ -422,7 +432,7 @@ namespace BetfairNG
                 [FILTER] = marketFilter,
                 [GRANULARITY] = timeGranularity
             };
-            return networkClient.Invoke<List<TimeRangeResult>>(Endpoint.Betting, LIST_TIME_RANGES, args);
+            return NetworkClient.Invoke<List<TimeRangeResult>>(Endpoint.Betting, LIST_TIME_RANGES, args);
         }
 
         public Task<BetfairServerResponse<List<VenueResult>>> ListVenues(MarketFilter marketFilter)
@@ -431,7 +441,7 @@ namespace BetfairNG
             {
                 [FILTER] = marketFilter
             };
-            return networkClient.Invoke<List<VenueResult>>(Endpoint.Betting, LIST_VENUES, args);
+            return NetworkClient.Invoke<List<VenueResult>>(Endpoint.Betting, LIST_VENUES, args);
         }
 
         public bool Login(string p12CertificateLocation,
@@ -447,7 +457,7 @@ namespace BetfairNG
             preNetworkRequest?.Invoke();
 
             string postData = string.Format("username={0}&password={1}", username, password);
-            X509Certificate2 x509certificate = new X509Certificate2(p12CertificateLocation);
+            using X509Certificate2 x509certificate = new X509Certificate2(p12CertificateLocation);
             return Login(x509certificate, postData, loginUrl);
         }
 
@@ -465,7 +475,7 @@ namespace BetfairNG
             preNetworkRequest?.Invoke();
 
             string postData = string.Format("username={0}&password={1}", username, password);
-            X509Certificate2 x509certificate = new X509Certificate2(p12CertificateLocation, p12CertificatePassword);
+            using X509Certificate2 x509certificate = new X509Certificate2(p12CertificateLocation, p12CertificatePassword);
 
             return Login(x509certificate, postData, loginUrl);
         }
@@ -503,7 +513,7 @@ namespace BetfairNG
                 [CUSTOMER_STRATEGY] = customerStrategyRef
             };
 
-            return networkClient.Invoke<PlaceExecutionReport>(Endpoint.Betting, PLACE_ORDERS_METHOD, args);
+            return NetworkClient.Invoke<PlaceExecutionReport>(Endpoint.Betting, PLACE_ORDERS_METHOD, args);
         }
 
         public Task<BetfairServerResponse<ReplaceExecutionReport>> ReplaceOrders(
@@ -520,7 +530,7 @@ namespace BetfairNG
                 [MARKET_VERSION] = marketVersion
             };
 
-            return networkClient.Invoke<ReplaceExecutionReport>(Endpoint.Betting, REPLACE_ORDERS_METHOD, args);
+            return NetworkClient.Invoke<ReplaceExecutionReport>(Endpoint.Betting, REPLACE_ORDERS_METHOD, args);
         }
 
         public Task<BetfairServerResponse<TransferResponse>> TransferFunds(Wallet from, Wallet to, double amount)
@@ -531,7 +541,7 @@ namespace BetfairNG
                 [TO] = to,
                 [AMOUNT] = amount
             };
-            return networkClient.Invoke<TransferResponse>(Endpoint.Account, TRANSFER_FUNDS, args);
+            return NetworkClient.Invoke<TransferResponse>(Endpoint.Account, TRANSFER_FUNDS, args);
         }
 
         public Task<BetfairServerResponse<UpdateExecutionReport>> UpdateOrders(
@@ -546,7 +556,7 @@ namespace BetfairNG
                 [CUSTOMER_REFERENCE] = customerRef
             };
 
-            return networkClient.Invoke<UpdateExecutionReport>(Endpoint.Betting, UPDATE_ORDERS_METHOD, args);
+            return NetworkClient.Invoke<UpdateExecutionReport>(Endpoint.Betting, UPDATE_ORDERS_METHOD, args);
         }
 
         private bool Login(X509Certificate2 x509certificate, string postData, string loginUrl)

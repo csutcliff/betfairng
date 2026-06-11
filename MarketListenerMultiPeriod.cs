@@ -1,26 +1,19 @@
-﻿using BetfairNG.Data;
+using BetfairNG.Data;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Reactive.Concurrency;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
 
 namespace BetfairNG
 {
-    public class MarketListenerMultiPeriod : IDisposable
+    public class MarketListenerMultiPeriod : MarketListenerBase, IDisposable
     {
         private readonly BetfairClient _client;
         private readonly object _lockObj = new object();
 
         private readonly ConcurrentDictionary<double, ConcurrentDictionary<string, bool>> _marketPollInterval =
             new ConcurrentDictionary<double, ConcurrentDictionary<string, bool>>();
-
-        private readonly ConcurrentDictionary<string, IObservable<MarketBook>> _markets =
-            new ConcurrentDictionary<string, IObservable<MarketBook>>();
-
-        private readonly ConcurrentDictionary<string, IObserver<MarketBook>> _observers =
-            new ConcurrentDictionary<string, IObserver<MarketBook>>();
 
         private readonly ConcurrentDictionary<double, Poller> _polling =
             new ConcurrentDictionary<double, Poller>();
@@ -50,56 +43,18 @@ namespace BetfairNG
 
         public IObservable<MarketBook> SubscribeMarketBook(string marketId, double pollIntervalInSeconds)
         {
-            if (_markets.TryGetValue(marketId, out IObservable<MarketBook> market))
-                return market;
-
-            SetupMarketPolling(marketId, pollIntervalInSeconds);
-
-            var observable = Observable.Create<MarketBook>(
-               observer =>
-               {
-                   _observers.AddOrUpdate(marketId, observer, (key, existingVal) => existingVal);
-                   return Disposable.Create(() =>
-                   {
-                       _markets.TryRemove(marketId, out IObservable<MarketBook> o);
-                       _observers.TryRemove(marketId, out IObserver<MarketBook> ob);
-
-                       CleanUpPolling(marketId);
-                   });
-               })
-               .Publish()
-               .RefCount();
-
-            _markets.AddOrUpdate(marketId, observable, (key, existingVal) => existingVal);
-            return observable;
+            return GetOrCreateMarketBookObservable(marketId,
+                () => SetupMarketPolling(marketId, pollIntervalInSeconds));
         }
 
         public IObservable<Runner> SubscribeRunner(string marketId, long selectionId, long pollinterval)
         {
-            var marketTicks = SubscribeMarketBook(marketId, pollinterval);
-
-            var observable = Observable.Create<Runner>(
-              (IObserver<Runner> observer) =>
-              {
-                  var subscription = marketTicks.Subscribe(tick =>
-                  {
-                      var runner = tick.Runners.First(c => c.SelectionId == selectionId);
-                      // attach the book
-                      runner.MarketBook = tick;
-                      observer.OnNext(runner);
-                  });
-
-                  return Disposable.Create(() => subscription.Dispose());
-              })
-              .Publish()
-              .RefCount();
-
-            return observable;
+            return CreateRunnerObservable(SubscribeMarketBook(marketId, pollinterval), selectionId);
         }
 
         public void UpdatePollInterval(string marketId, double newPollIntervalInSeconds)
         {
-            if (!_markets.Keys.Contains(marketId)) return;
+            if (!Markets.Keys.Contains(marketId)) return;
 
             lock (_lockObj)
             {
@@ -110,10 +65,17 @@ namespace BetfairNG
             }
         }
 
+        protected override void OnMarketUnsubscribed(string marketId)
+        {
+            CleanUpPolling(marketId);
+        }
+
         private void CleanUpPolling(string marketId)
         {
             // Find the interval that the market is now running under
-            var interval = _marketPollInterval.First(search => search.Value.Keys.Contains(marketId)).Key;
+            var entry = _marketPollInterval.FirstOrDefault(search => search.Value.Keys.Contains(marketId));
+            if (entry.Value == null) return;
+            var interval = entry.Key;
 
             if (_marketPollInterval.TryGetValue(interval, out ConcurrentDictionary<string, bool> mpi))
             {
@@ -135,11 +97,26 @@ namespace BetfairNG
         {
             if (!_marketPollInterval.TryGetValue(pollinterval, out ConcurrentDictionary<string, bool> bag)) return;
 
+            try
+            {
+                Poll(pollinterval, bag);
+            }
+            catch (Exception ex)
+            {
+                // a throw here would tear down the Interval subscription and
+                // silently stop polling for this interval; OnError the affected subscriptions instead
+                foreach (var observer in Observers.Where(k => bag.Keys.Contains(k.Key)))
+                    observer.Value.OnError(ex);
+            }
+        }
+
+        private void Poll(double pollinterval, ConcurrentDictionary<string, bool> bag)
+        {
             var book = _client.ListMarketBook(bag.Keys, _priceProjection).Result;
 
             if (book.HasError)
             {
-                foreach (var observer in _observers.Where(k => bag.Keys.Contains(k.Key)))
+                foreach (var observer in Observers.Where(k => bag.Keys.Contains(k.Key)))
                 {
                     observer.Value.OnError(book.Error);
                 }
@@ -158,17 +135,7 @@ namespace BetfairNG
                 p.LatestDataRequestFinish = book.LastByte;
             }
 
-            foreach (var market in book.Response)
-            {
-                if (!_observers.TryGetValue(market.MarketId, out IObserver<MarketBook> o)) continue;
-
-                // check to see if the market is finished
-                if (market.Status == MarketStatus.CLOSED ||
-                    market.Status == MarketStatus.INACTIVE)
-                    o.OnCompleted();
-                else
-                    o.OnNext(market);
-            }
+            PublishMarketBooks(book.Response);
         }
 
         private void SetupMarketPolling(string marketId, double pollIntervalInSeconds)

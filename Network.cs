@@ -73,26 +73,39 @@ namespace BetfairNG
 
         public string UserAgent { get; set; }
 
+        private HttpClient _proxyHttpClient;
+        private WebProxy _proxyHttpClientProxy;
+        private readonly object _proxyClientLock = new object();
+
         private HttpClient GetHttpClient()
         {
             if (Proxy == null)
                 return _httpClient;
 
-            // Create dedicated client with proxy
-            var handler = new HttpClientHandler
+            lock (_proxyClientLock)
             {
-                Proxy = Proxy,
-                UseProxy = true,
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-                SslProtocols = SslProtocols.Tls12
-            };
+                // Reuse the dedicated proxied client; rebuild only if Proxy was reassigned
+                if (_proxyHttpClient == null || !ReferenceEquals(_proxyHttpClientProxy, Proxy))
+                {
+                    _proxyHttpClient?.Dispose();
 
-            var client = new HttpClient(handler)
-            {
-                Timeout = TimeSpan.FromMilliseconds(TimeoutMilliseconds)
-            };
-            client.DefaultRequestHeaders.ExpectContinue = false;
-            return client;
+                    var handler = new HttpClientHandler
+                    {
+                        Proxy = Proxy,
+                        UseProxy = true,
+                        AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                        SslProtocols = SslProtocols.Tls12
+                    };
+
+                    _proxyHttpClient = new HttpClient(handler)
+                    {
+                        Timeout = TimeSpan.FromMilliseconds(TimeoutMilliseconds)
+                    };
+                    _proxyHttpClient.DefaultRequestHeaders.ExpectContinue = false;
+                    _proxyHttpClientProxy = Proxy;
+                }
+                return _proxyHttpClient;
+            }
         }
 
         public Task<BetfairServerResponse<T>> Invoke<T>(
@@ -224,49 +237,6 @@ namespace BetfairNG
                 RequestStart = requestStart
             };
             return r;
-        }
-
-        [JsonObject(MemberSerialization.OptIn)]
-        public class JsonRequest
-        {
-            public JsonRequest()
-            {
-                JsonRpc = "2.0";
-            }
-
-            [JsonProperty(PropertyName = "id")]
-            public object Id { get; set; }
-
-            [JsonProperty(PropertyName = "jsonrpc", NullValueHandling = NullValueHandling.Ignore)]
-            public string JsonRpc { get; set; }
-
-            [JsonProperty(PropertyName = "method")]
-            public string Method { get; set; }
-
-            [JsonProperty(PropertyName = "params")]
-            public object Params { get; set; }
-        }
-
-        [JsonObject(MemberSerialization.OptIn)]
-        public class JsonResponse<T>
-        {
-            [JsonProperty(PropertyName = "error", NullValueHandling = NullValueHandling.Ignore)]
-            public Data.Exceptions.Exception Error { get; set; }
-
-            [JsonIgnore]
-            public bool HasError
-            {
-                get { return Error != null; }
-            }
-
-            [JsonProperty(PropertyName = "id")]
-            public object Id { get; set; }
-
-            [JsonProperty(PropertyName = "jsonrpc", NullValueHandling = NullValueHandling.Ignore)]
-            public string JsonRpc { get; set; }
-
-            [JsonProperty(PropertyName = "result", NullValueHandling = NullValueHandling.Ignore)]
-            public T Result { get; set; }
         }
     }
 }

@@ -5,6 +5,9 @@ namespace BetfairNG
 {
     public class JsonConvert
     {
+        private static readonly JsonSerializerSettings SerializerSettings =
+            new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+
         public static T Deserialize<T>(string json)
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
@@ -24,8 +27,7 @@ namespace BetfairNG
 
         public static string Serialize<T>(T value)
         {
-            var settings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
-            return Newtonsoft.Json.JsonConvert.SerializeObject(value, settings);
+            return Newtonsoft.Json.JsonConvert.SerializeObject(value, SerializerSettings);
         }
     }
 

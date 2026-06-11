@@ -69,14 +69,7 @@ namespace Betfair.ESAClient.Protocol
             }
             set
             {
-                if (_changeHandler == null)
-                {
-                    _changeHandler = new NullChangeHandler();
-                }
-                else
-                {
-                    _changeHandler = value;
-                }
+                _changeHandler = value ?? new NullChangeHandler();
             }
         }
 
@@ -330,16 +323,30 @@ namespace Betfair.ESAClient.Protocol
 
         private void ProcessMarketChangeMessage(MarketChangeMessage message)
         {
+            var handler = MarketSubscriptionHandler;
+            if (handler == null)
+            {
+                //change arrived before the subscription status response (or after stop) - ignore
+                Trace.TraceWarning("ESAClient: Market change message received with no active subscription - ignored");
+                return;
+            }
             ChangeMessage<MarketChange> change = ChangeMessageFactory.ToChangeMessage(message);
-            change = MarketSubscriptionHandler.ProcessChangeMessage(change);
+            change = handler.ProcessChangeMessage(change);
 
             if (change != null) ChangeHandler.OnMarketChange(change);
         }
 
         private void ProcessOrderChangeMessage(OrderChangeMessage message)
         {
+            var handler = OrderSubscriptionHandler;
+            if (handler == null)
+            {
+                //change arrived before the subscription status response (or after stop) - ignore
+                Trace.TraceWarning("ESAClient: Order change message received with no active subscription - ignored");
+                return;
+            }
             ChangeMessage<OrderMarketChange> change = ChangeMessageFactory.ToChangeMessage(message);
-            change = OrderSubscriptionHandler.ProcessChangeMessage(change);
+            change = handler.ProcessChangeMessage(change);
 
             if (change != null) ChangeHandler.OnOrderChange(change);
         }

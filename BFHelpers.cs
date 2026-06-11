@@ -24,15 +24,6 @@ namespace BetfairNG
                 return 0.0;
         }
 
-        public static List<T> Copy<T>(this List<T> list)
-        {
-            List<T> newList = new List<T>();
-            for (int i = 0; i < list.Count; i++)
-                newList.Add(list[i]);
-
-            return newList;
-        }
-
         public static double GetMarketEfficiency(IEnumerable<double> odds)
         {
             double total = odds.Sum(c => 1.0 / c);
@@ -90,6 +81,22 @@ namespace BetfairNG
             return orders.Where(c => c.Side == Side.LAY).ToList();
         }
 
+        private static string FormatLadderLevel<T>(IList<T> prices, int level, Func<T, double> priceOf)
+        {
+            return prices.Count > level ? priceOf(prices[level]).ToString("0.00").PadLeft(6) : "  0.00";
+        }
+
+        private static string FormatPriceLadder<T>(IList<T> availableToBack, IList<T> availableToLay, Func<T, double> priceOf)
+        {
+            return string.Format("{0},{1},{2}  ::  {3},{4},{5}",
+                FormatLadderLevel(availableToBack, 2, priceOf),
+                FormatLadderLevel(availableToBack, 1, priceOf),
+                FormatLadderLevel(availableToBack, 0, priceOf),
+                FormatLadderLevel(availableToLay, 0, priceOf),
+                FormatLadderLevel(availableToLay, 1, priceOf),
+                FormatLadderLevel(availableToLay, 2, priceOf));
+        }
+
         public static string MarketBookConsole(
             MarketCatalogue marketCatalogue,
             MarketBook marketBook,
@@ -132,17 +139,12 @@ namespace BetfairNG
 
                     string consoleRunnerName = runnerName != null ? runnerName.RunnerName : "null";
 
-                    sb.AppendLine(string.Format("{0} {9} [{1}] {2},{3},{4}  ::  {5},{6},{7} [{8}] {10}",
+                    sb.AppendLine(string.Format("{0} {1} [{2}] {3} [{4}] {5}",
                         consoleRunnerName.PadRight(25),
-                        runner.ExchangePrices.AvailableToBack.Sum(a => a.Size).ToString("0").PadLeft(7),
-                        runner.ExchangePrices.AvailableToBack.Count > 2 ? runner.ExchangePrices.AvailableToBack[2].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                        runner.ExchangePrices.AvailableToBack.Count > 1 ? runner.ExchangePrices.AvailableToBack[1].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                        runner.ExchangePrices.AvailableToBack.Count > 0 ? runner.ExchangePrices.AvailableToBack[0].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                        runner.ExchangePrices.AvailableToLay.Count > 0 ? runner.ExchangePrices.AvailableToLay[0].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                        runner.ExchangePrices.AvailableToLay.Count > 1 ? runner.ExchangePrices.AvailableToLay[1].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                        runner.ExchangePrices.AvailableToLay.Count > 2 ? runner.ExchangePrices.AvailableToLay[2].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                        runner.ExchangePrices.AvailableToLay.Sum(a => a.Size).ToString("0").PadLeft(7),
                         bsString,
+                        runner.ExchangePrices.AvailableToBack.Sum(a => a.Size).ToString("0").PadLeft(7),
+                        FormatPriceLadder(runner.ExchangePrices.AvailableToBack, runner.ExchangePrices.AvailableToLay, p => p.Price),
+                        runner.ExchangePrices.AvailableToLay.Sum(a => a.Size).ToString("0").PadLeft(7),
                         lyString));
                 }
             }
@@ -188,17 +190,12 @@ namespace BetfairNG
 
                     string consoleRunnerName = runnerName != null ? runnerName.RunnerName : "null";
 
-                    sb.AppendLine(string.Format("{0} {9} [{1}] {2},{3},{4}  ::  {5},{6},{7} [{8}] {10}",
+                    sb.AppendLine(string.Format("{0} {1} [{2}] {3} [{4}] {5}",
                         consoleRunnerName.PadRight(25),
-                        runner.Prices.AvailableToBack.Sum(a => a.Size).ToString("0").PadLeft(7),
-                        runner.Prices.AvailableToBack.Count > 2 ? runner.Prices.AvailableToBack[2].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                        runner.Prices.AvailableToBack.Count > 1 ? runner.Prices.AvailableToBack[1].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                        runner.Prices.AvailableToBack.Count > 0 ? runner.Prices.AvailableToBack[0].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                        runner.Prices.AvailableToLay.Count > 0 ? runner.Prices.AvailableToLay[0].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                        runner.Prices.AvailableToLay.Count > 1 ? runner.Prices.AvailableToLay[1].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                        runner.Prices.AvailableToLay.Count > 2 ? runner.Prices.AvailableToLay[2].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                        runner.Prices.AvailableToLay.Sum(a => a.Size).ToString("0").PadLeft(7),
                         bsString,
+                        runner.Prices.AvailableToBack.Sum(a => a.Size).ToString("0").PadLeft(7),
+                        FormatPriceLadder(runner.Prices.AvailableToBack, runner.Prices.AvailableToLay, p => p.Price),
+                        runner.Prices.AvailableToLay.Sum(a => a.Size).ToString("0").PadLeft(7),
                         lyString));
                 }
             }
@@ -214,15 +211,10 @@ namespace BetfairNG
             {
                 var nameRunner = descriptions.First(c => c.SelectionId == runner.SelectionId);
 
-                builder.AppendLine(string.Format("{0}\t [{1}] {2},{3},{4}  ::  {5},{6},{7} [{8}]",
+                builder.AppendLine(string.Format("{0}\t [{1}] {2} [{3}]",
                     nameRunner.RunnerName.PadRight(25),
                     runner.ExchangePrices.AvailableToBack.Sum(a => a.Size).ToString().PadLeft(7),
-                    runner.ExchangePrices.AvailableToBack.Count > 2 ? runner.ExchangePrices.AvailableToBack[2].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                    runner.ExchangePrices.AvailableToBack.Count > 1 ? runner.ExchangePrices.AvailableToBack[1].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                    runner.ExchangePrices.AvailableToBack.Count > 0 ? runner.ExchangePrices.AvailableToBack[0].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                    runner.ExchangePrices.AvailableToLay.Count > 0 ? runner.ExchangePrices.AvailableToLay[0].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                    runner.ExchangePrices.AvailableToLay.Count > 1 ? runner.ExchangePrices.AvailableToLay[1].Price.ToString("0.00").PadLeft(6) : "  0.00",
-                    runner.ExchangePrices.AvailableToLay.Count > 2 ? runner.ExchangePrices.AvailableToLay[2].Price.ToString("0.00").PadLeft(6) : "  0.00",
+                    FormatPriceLadder(runner.ExchangePrices.AvailableToBack, runner.ExchangePrices.AvailableToLay, p => p.Price),
                     runner.ExchangePrices.AvailableToLay.Sum(a => a.Size).ToString().PadLeft(7)));
             }
 
@@ -320,13 +312,14 @@ namespace BetfairNG
             if (IsValidPrice(price, out int index))
                 return price;
 
-            return Table[~index];
+            // ~index is the insertion point (first ladder value above price)
+            return Table[~index - 1];
         }
 
         public static double RoundUpToNearestBetfairPrice(double price)
         {
             if (price > Max_Price)
-                return -1;
+                return Max_Price;
             if (price <= Min_Price)
                 return Min_Price;
 
@@ -343,11 +336,7 @@ namespace BetfairNG
         /// <returns>the price if is is on the ladder or the value closest on the ladder below the input price</returns>
         public static double SnapToLadder(double price)
         {
-            if (price > Table[^1])
-                return Table[^1];
-            if (IsValidPrice(price, out int index))
-                return price;
-            return Table[index - 1];
+            return RoundDownToNearestBetfairPrice(price);
         }
 
         public static double SubtractPip(double price)
