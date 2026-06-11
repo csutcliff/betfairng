@@ -69,14 +69,7 @@ namespace Betfair.ESAClient.Protocol
             }
             set
             {
-                if (_changeHandler == null)
-                {
-                    _changeHandler = new NullChangeHandler();
-                }
-                else
-                {
-                    _changeHandler = value;
-                }
+                _changeHandler = value ?? new NullChangeHandler();
             }
         }
 
