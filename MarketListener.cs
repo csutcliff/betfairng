@@ -105,17 +105,11 @@ namespace BetfairNG
                                         foreach (var observer in Observers)
                                             observer.Value.OnError(book.Error);
                                     }
-                                    //var j = 0;
-
-                                    //int sleepTime = samplePeriod - (int)DateTime.Now.Subtract(lastRequestStart).TotalMilliseconds;
-
                                     while (stopWatch.ElapsedMilliseconds < samplePeriod && !marketAdded)
                                     {
                                         await Task.Delay(sampleFrequency);
-                                        //j = j + sampleFrequency;
                                     }
                                     marketAdded = false;
-                                    //var x = stopWatch.ElapsedMilliseconds;
                                 }
                                 else
                                     // TODO:// will die with rx scheduler
