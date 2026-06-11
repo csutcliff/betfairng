@@ -327,7 +327,7 @@ namespace BetfairNG
         public static double RoundUpToNearestBetfairPrice(double price)
         {
             if (price > Max_Price)
-                return -1;
+                return Max_Price;
             if (price <= Min_Price)
                 return Min_Price;
 
