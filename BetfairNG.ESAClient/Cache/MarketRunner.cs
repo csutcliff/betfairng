@@ -39,6 +39,12 @@ namespace Betfair.ESAClient.Cache
 
         private MarketRunnerSnap _snap;
 
+        /// <summary>
+        /// Guards _snap/_runnerPrices/_runnerDefinition against the user thread
+        /// reading Snap while the socket thread publishes a change.
+        /// </summary>
+        private readonly object _snapLock = new();
+
         private double _spf;
 
         // special prices
@@ -61,13 +67,16 @@ namespace Betfair.ESAClient.Cache
         {
             get
             {
-                _snap ??= new MarketRunnerSnap()
+                lock (_snapLock)
                 {
-                    RunnerId = RunnerId,
-                    Definition = _runnerDefinition,
-                    Prices = _runnerPrices
-                };
-                return _snap;
+                    _snap ??= new MarketRunnerSnap()
+                    {
+                        RunnerId = RunnerId,
+                        Definition = _runnerDefinition,
+                        Prices = _runnerPrices
+                    };
+                    return _snap;
+                }
             }
         }
 
@@ -82,9 +91,6 @@ namespace Betfair.ESAClient.Cache
 
         internal void OnPriceChange(bool isImage, RunnerChange runnerChange)
         {
-            //snap is invalid
-            _snap = null;
-
             MarketRunnerPrices newPrices = new()
             {
                 AvailableToLay = _atlPrices.OnPriceChange(isImage, runnerChange.Atl),
@@ -104,16 +110,23 @@ namespace Betfair.ESAClient.Cache
                 TradedVolume = Utils.SelectPrice(isImage, ref _tv, runnerChange.Tv)
             };
 
-            //copy on write
-            _runnerPrices = newPrices;
+            lock (_snapLock)
+            {
+                //copy on write
+                _runnerPrices = newPrices;
+                //snap is invalid
+                _snap = null;
+            }
         }
 
         internal void OnRunnerDefinitionChange(RunnerDefinition runnerDefinition)
         {
-            //snap is invalid
-            _snap = null;
-
-            _runnerDefinition = runnerDefinition;
+            lock (_snapLock)
+            {
+                _runnerDefinition = runnerDefinition;
+                //snap is invalid
+                _snap = null;
+            }
         }
     }
 }
