@@ -1,0 +1,29 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "rebaseWhen": "conflicted",
+  "schedule": [
+    "before 9am on saturday"
+  ],
+  "packageRules": [
+    {
+      "description": "Auto-merge patch and minor updates via branch merge",
+      "matchUpdateTypes": [
+        "patch",
+        "minor"
+      ],
+      "automerge": true,
+      "automergeType": "branch"
+    },
+    {
+      "description": "Group System.* BCL packages",
+      "groupName": "System BCL",
+      "matchPackageNames": [
+        "System.Collections.Immutable",
+        "System.Reactive"
+      ]
+    }
+  ]
+}
