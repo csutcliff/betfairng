@@ -345,9 +345,12 @@ namespace BetfairNG
         {
             if (price > Table[^1])
                 return Table[^1];
+            if (price <= Table[0])
+                return Table[0];
             if (IsValidPrice(price, out int index))
                 return price;
-            return Table[index - 1];
+            // ~index is the insertion point (first ladder value above price)
+            return Table[~index - 1];
         }
 
         public static double SubtractPip(double price)
