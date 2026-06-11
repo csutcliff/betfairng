@@ -9,11 +9,11 @@ namespace BetfairNG
 {
     public class MarketListener : MarketListenerBase
     {
-        private static DateTime lastRequestStart;
-        private static DateTime latestDataRequestFinish = DateTime.Now;
-        private static DateTime latestDataRequestStart = DateTime.Now;
         private static MarketListener listener = null;
-        private static readonly object lockObj = new object();
+        private DateTime lastRequestStart;
+        private DateTime latestDataRequestFinish = DateTime.Now;
+        private DateTime latestDataRequestStart = DateTime.Now;
+        private readonly object lockObj = new object();
         private readonly BetfairClient client;
         private readonly int connectionCount;
         private bool marketAdded = false;
