@@ -51,6 +51,21 @@ namespace BetfairNG
 
         private void DoWork()
         {
+            try
+            {
+                Poll();
+            }
+            catch (Exception ex)
+            {
+                // a throw here would tear down the Interval subscription and
+                // silently stop all polling; OnError the affected subscriptions instead
+                foreach (var observer in Observers)
+                    observer.Value.OnError(ex);
+            }
+        }
+
+        private void Poll()
+        {
             var book = _client.ListMarketBook(Markets.Keys.ToList(), this._priceProjection).Result;
 
             if (book.HasError)

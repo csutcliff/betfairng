@@ -65,59 +65,70 @@ namespace BetfairNG
                     {
                         while (true)
                         {
-                            if (Markets.Count > 0)
+                            try
                             {
-                                // TODO:// look at spinwait or signalling instead of this
-                                while (connectionCount > 1 && DateTime.Now.Subtract(lastRequestStart).TotalMilliseconds < (1000 / connectionCount))
+                                if (Markets.Count > 0)
                                 {
-                                    int waitMs = (1000 / connectionCount) - (int)DateTime.Now.Subtract(lastRequestStart).TotalMilliseconds;
-                                    Thread.Sleep(waitMs > 0 ? waitMs : 0);
-                                }
-
-                                var stopWatch = new Stopwatch();
-                                stopWatch.Start();
-
-                                lock (lockObj)
-                                    lastRequestStart = DateTime.Now;
-
-                                var book = client.ListMarketBook(Markets.Keys.ToList(), this.priceProjection).Result;
-
-                                if (!book.HasError)
-                                {
-                                    // we may have fresher data than the response to this request
-                                    if (book.RequestStart < latestDataRequestStart && book.LastByte > latestDataRequestFinish)
-                                        continue;
-                                    else
+                                    // TODO:// look at spinwait or signalling instead of this
+                                    while (connectionCount > 1 && DateTime.Now.Subtract(lastRequestStart).TotalMilliseconds < (1000 / connectionCount))
                                     {
-                                        lock (lockObj)
-                                        {
-                                            latestDataRequestStart = book.RequestStart;
-                                            latestDataRequestFinish = book.LastByte;
-                                        }
+                                        int waitMs = (1000 / connectionCount) - (int)DateTime.Now.Subtract(lastRequestStart).TotalMilliseconds;
+                                        Thread.Sleep(waitMs > 0 ? waitMs : 0);
                                     }
 
-                                    PublishMarketBooks(book.Response);
+                                    var stopWatch = new Stopwatch();
+                                    stopWatch.Start();
+
+                                    lock (lockObj)
+                                        lastRequestStart = DateTime.Now;
+
+                                    var book = client.ListMarketBook(Markets.Keys.ToList(), this.priceProjection).Result;
+
+                                    if (!book.HasError)
+                                    {
+                                        // we may have fresher data than the response to this request
+                                        if (book.RequestStart < latestDataRequestStart && book.LastByte > latestDataRequestFinish)
+                                            continue;
+                                        else
+                                        {
+                                            lock (lockObj)
+                                            {
+                                                latestDataRequestStart = book.RequestStart;
+                                                latestDataRequestFinish = book.LastByte;
+                                            }
+                                        }
+
+                                        PublishMarketBooks(book.Response);
+                                    }
+                                    else
+                                    {
+                                        foreach (var observer in Observers)
+                                            observer.Value.OnError(book.Error);
+                                    }
+                                    //var j = 0;
+
+                                    //int sleepTime = samplePeriod - (int)DateTime.Now.Subtract(lastRequestStart).TotalMilliseconds;
+
+                                    while (stopWatch.ElapsedMilliseconds < samplePeriod && !marketAdded)
+                                    {
+                                        await Task.Delay(sampleFrequency);
+                                        //j = j + sampleFrequency;
+                                    }
+                                    marketAdded = false;
+                                    //var x = stopWatch.ElapsedMilliseconds;
                                 }
                                 else
-                                {
-                                    foreach (var observer in Observers)
-                                        observer.Value.OnError(book.Error);
-                                }
-                                //var j = 0;
-
-                                //int sleepTime = samplePeriod - (int)DateTime.Now.Subtract(lastRequestStart).TotalMilliseconds;
-
-                                while (stopWatch.ElapsedMilliseconds < samplePeriod && !marketAdded)
-                                {
-                                    await Task.Delay(sampleFrequency);
-                                    //j = j + sampleFrequency;
-                                }
-                                marketAdded = false;
-                                //var x = stopWatch.ElapsedMilliseconds;
+                                    // TODO:// will die with rx scheduler
+                                    await Task.Delay(500);
                             }
-                            else
-                                // TODO:// will die with rx scheduler
+                            catch (Exception ex)
+                            {
+                                // a failed request must not silently kill the polling loop;
+                                // OnError tears down the affected subscriptions
+                                foreach (var observer in Observers)
+                                    observer.Value.OnError(ex);
                                 await Task.Delay(500);
+                            }
                         }
                     });
                 Thread.Sleep(1000 / connectionCount);

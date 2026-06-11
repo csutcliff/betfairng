@@ -97,6 +97,21 @@ namespace BetfairNG
         {
             if (!_marketPollInterval.TryGetValue(pollinterval, out ConcurrentDictionary<string, bool> bag)) return;
 
+            try
+            {
+                Poll(pollinterval, bag);
+            }
+            catch (Exception ex)
+            {
+                // a throw here would tear down the Interval subscription and
+                // silently stop polling for this interval; OnError the affected subscriptions instead
+                foreach (var observer in Observers.Where(k => bag.Keys.Contains(k.Key)))
+                    observer.Value.OnError(ex);
+            }
+        }
+
+        private void Poll(double pollinterval, ConcurrentDictionary<string, bool> bag)
+        {
             var book = _client.ListMarketBook(bag.Keys, _priceProjection).Result;
 
             if (book.HasError)
