@@ -457,7 +457,7 @@ namespace BetfairNG
             preNetworkRequest?.Invoke();
 
             string postData = string.Format("username={0}&password={1}", username, password);
-            X509Certificate2 x509certificate = new X509Certificate2(p12CertificateLocation);
+            using X509Certificate2 x509certificate = new X509Certificate2(p12CertificateLocation);
             return Login(x509certificate, postData, loginUrl);
         }
 
@@ -475,7 +475,7 @@ namespace BetfairNG
             preNetworkRequest?.Invoke();
 
             string postData = string.Format("username={0}&password={1}", username, password);
-            X509Certificate2 x509certificate = new X509Certificate2(p12CertificateLocation, p12CertificatePassword);
+            using X509Certificate2 x509certificate = new X509Certificate2(p12CertificateLocation, p12CertificatePassword);
 
             return Login(x509certificate, postData, loginUrl);
         }
